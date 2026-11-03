@@ -469,7 +469,7 @@ Download aggregate CSV
   async function renderReveals() {
     const rv = await q("study_reveals");
     document.getElementById("reveals").replaceChildren(...cards.map(c => { const r = rv.find(x => x.study_id === c.id); if (!r) return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, "No reveal record loaded."));
-      return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}: ${c.public_title}`), el("dl", { class: "reveal" }, ...[["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship", r.relationships], ["Disclosure", r.disclosure_quote]].flatMap(([k, v]) => v ? [el("dt", {}, k), el("dd", {}, v)] : []))); }));
+      return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}: ${c.public_title}`), el("dl", { class: "reveal" }, ...[["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship", r.relationships]].flatMap(([k, v]) => v ? [el("dt", {}, k), el("dd", {}, v)] : []))); }));
   }
 
   // ---- standards editor
