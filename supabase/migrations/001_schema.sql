@@ -1,5 +1,5 @@
 -- edtech-evidence-lab: schema. Run in the Supabase SQL editor (or supabase db push).
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 create table if not exists instructor_emails (
   email text primary key
@@ -46,7 +46,7 @@ create table if not exists participants (
   id uuid primary key default gen_random_uuid(),
   session_id uuid not null references sessions(id) on delete cascade,
   group_code text,
-  token text not null unique default encode(gen_random_bytes(16), 'hex'),
+  token text not null unique default encode(extensions.gen_random_bytes(16), 'hex'),
   created_at timestamptz not null default now()
 );
 
