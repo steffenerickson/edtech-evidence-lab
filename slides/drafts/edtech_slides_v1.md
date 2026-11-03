@@ -14,11 +14,9 @@ Have students scan the QR code or type the URL. They enter the session code on t
 Timing target: 75 minutes. The run-of-show has the 60-minute cuts.
 :::
 
-# Join the Session
+# Join: steffenerickson.github.io/edtech-evidence-lab
 
 ![](../../images/qr_join.png)
-
-steffenerickson.github.io/edtech-evidence-lab · Session code: [on the board]
 
 ::: notes
 Leave this up until the join count on the dashboard matches the room. Students pick their group letter when they join; group letters are on the board.
@@ -164,11 +162,9 @@ G and H. Both are randomized trials of the same kind of AI chatbot, both from 20
 J. The dissertation chapter. The company provided the data, a co-author works for the company, and the first author, who is me, previously worked in the company's research group. The data use agreement says the dissertation could be written and submitted regardless of the findings. The result was mixed: positive in reading, no benefit in mathematics. The company's own earlier evaluation of the same program reported 0.51 standard deviations. Ask the class what safeguards they would want to see before trusting J, and whether the mixed finding is itself evidence about the safeguards.
 :::
 
-# Same Evidence, Different Claim
+# Headline, 15 Sept 2015: Computers 'do not improve' pupil results, says OECD
 
 ![](../../images/fig_s01_oecd_reveal.png)
-
-Headline, 15 September 2015: Computers 'do not improve' pupil results, says OECD
 
 ::: notes
 This is Figure 6.5 of the OECD report, Study A: reading performance against an index of computer use at school, averaged across 20 to 29 countries and adjusted for socioeconomic status. The report calls it a hill shape and says on page 146 that the data cannot isolate cause and effect.
@@ -249,7 +245,7 @@ For each standard, one sentence on why it matters, using a study from today as t
 End on the five. Do not add a summary slide after this.
 :::
 
-# Sources
+# Sources (A–F)
 
 - A. OECD (2015). *Students, Computers and Learning: Making the Connection.* doi:10.1787/9789264239555-en
 - B. Weatherholtz, Grimaldi & Hill (2022). *Use of MAP Accelerator associated with better-than-projected gains in MAP Growth scores.* Khan Academy.
@@ -257,6 +253,12 @@ End on the five. Do not add a summary slide after this.
 - D. Doss et al. (2025). *AI Use in Schools Is Quickly Increasing but Guidance Lags Behind.* RAND RR-A4180-1.
 - E. Malamud & Pop-Eleches (2011). Home computer use and the development of human capital. *QJE*, 126(2).
 - F. Bhatt et al. (2025). *Personalized Learning Initiative Interim Report.* UChicago Education Lab & MDRC.
+::: notes
+Continued on the next slide.
+:::
+
+# Sources (continued)
+
 - G. De Simone et al. (2025). *From Chalkboards to Chatbots.* World Bank PRWP 11125.
 - H. Bastani et al. (2025). Generative AI without guardrails can harm learning. *PNAS*, 122(26).
 - I. Madigan et al. (2019). Screen time and developmental screening. *JAMA Pediatrics*, 173(3).
