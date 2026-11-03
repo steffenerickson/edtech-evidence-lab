@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "studies.html",
+    "href": "studies.html",
+    "title": "Studies",
+    "section": "",
+    "text": "Join a session to see which studies are yours. All studies are readable.\n\n\n Show only my group’s studies"
+  },
+  {
+    "objectID": "results.html",
+    "href": "results.html",
+    "title": "Class results",
+    "section": "",
+    "text": "Results appear here when the instructor turns them on."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Join the session",
+    "section": "",
+    "text": "Enter the session code shown on the screen and pick your group. No name or email is collected. Your responses are tied to a random token stored in this browser only.\n\nSession code Group ABCDEF\n\n\nJoin\n\n\n\n\n\n\n\n\n\n\n\n\nPoll 1: What counts as education technology?\n\n\n\n\nSubmit definition\n\n\n\n\n\n\n\nNext: read your studies, then rate them.\n\n\nLeave session"
+  },
+  {
+    "objectID": "evaluate.html",
+    "href": "evaluate.html",
+    "title": "Rate the evidence",
+    "section": "",
+    "text": "Join a session first."
+  },
+  {
+    "objectID": "instructor.html",
+    "href": "instructor.html",
+    "title": "Instructor dashboard",
+    "section": "",
+    "text": "Email Password\n\n\nSign in\n\n\n\n\n\n\n\n\n\nSigned in as . Sign out\n\n\n\nSession\n\n\n\n\n Create session\n\n\nStudent link: \n\n\n\n\n\n\n\n\nGroups\n\nTwo studies per group. Default assignment fills groups A–E in order; edit and save.\n\n\n\n\n\n\nDefault A–E\n\nSave groups \n\n\n\n\n\nPhase\n\n\n\n\n Students can see aggregate results  Show written reasons below\n\n\nOrder: lobby → defining → reading → rating_pre → locked → revealed → rating_post → standards_submit → standards_sort → standards_vote → final. Lock before revealing.\n\n\n\n\n\nLive counts\n\n\n\n0\n\n\njoined\n\n\n\n\n0\n\n\ndefinitions\n\n\n\n\n0\n\n\npre ratings\n\n\n\n\n0\n\n\npost ratings\n\n\n\n\n0\n\n\nstandards proposed\n\n\n\n\n0\n\n\nvoters\n\n\n\n\n\n\n\nDefinitions\n\n\n\n\n\n\nRatings by study\n\n\n\n\n\n\n\nReveal information\n\nVisible to you at all times. Students receive it only after the phase passes locked.\n\n\n\n\n\n\n\n\nStandards: submissions and ballot\n\nCreate ballot options, then assign each submission to one. Mark scope. Toggle “on ballot”. After voting, mark the five winners (ties: resolve by voice vote, then mark).\n\n\n\n\n\n Add\n\n\nSubmissions\n\n\n\n\n\n\n\n\nExport and cleanup\n\n\nDownload aggregate CSV\n\nDelete this session and all responses"
+  },
+  {
+    "objectID": "standards.html",
+    "href": "standards.html",
+    "title": "Evidence standards",
+    "section": "",
+    "text": "Join a session first.\n\n\n\nPropose one standard\nA standard is a rule the class would use to judge whether a study, or a body of studies, is credible evidence that an education technology changed student learning. One sentence.\n\n\n\nSubmit\n\n\n\n\n\n\n\n\n\nVote for up to five\n\n\n\n\n\nCast votes\n\n\n\n\n\n\n\n\n\n\nThe class’s five standards"
+  }
+]
