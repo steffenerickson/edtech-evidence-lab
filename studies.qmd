@@ -2,7 +2,7 @@
 title: "Studies"
 ---
 
-<div class="phase-banner" id="phase">Join a session to see which sources are yours. All sources are readable.</div>
+<div class="phase-banner" id="phase">Join a session to see which sources are yours. All sources are non-technical summaries written by Claude Fable 5.1. The citation and a link to the original are included.</div>
 <p><label><input type="checkbox" id="mine-only"> Show only my group's sources</label></p>
 <div id="cards"></div>
 
