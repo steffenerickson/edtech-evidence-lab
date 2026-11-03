@@ -13,5 +13,6 @@ sources:
 - {id: s07, short: "De Simone et al. 2025, World Bank PRWP 11125", doc: "World Bank PDF", figure: "Fig 1 p.42; CC BY 3.0 IGO", status: verified}
 - {id: s08, short: "Bastani et al. 2025 PNAS", doc: "PMC full text + SSRN preprint", figure: "none (main effects are in Table 1); CC BY-NC-ND", status: verified}
 - {id: s09, short: "Madigan et al. 2019 JAMA Pediatrics", doc: "PMC full text + correction notice", figure: "none; AMA copyright", status: verified, note: "corrected coefficients used"}
-- {id: s10, short: "Erickson, Wong & Dray, chapter 1 short v3", doc: "local manuscript", figure: "Figure 5 (RD plots, reading), title cropped; author's own", status: verified}
+# removed from lesson 2026-11-03 at instructor request
+# - {id: s10, short: "Erickson, Wong & Dray, chapter 1 short v3", doc: "local manuscript", figure: "Figure 5 (RD plots, reading), title cropped; author's own", status: verified}
 - {id: n01, short: "Coughlan, BBC News, 15 Sep 2015", doc: "live BBC page", figure: "none", status: verified}

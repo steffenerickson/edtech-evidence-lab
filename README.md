@@ -1,10 +1,10 @@
 # edtech-evidence-lab
 
-Classroom website and polling app for a data-ethics lesson, "Evaluating Evidence on Education Technology." Students read ten anonymized study summaries, rate direction and credibility, see sources revealed, rate again, and vote on five evidence standards. Quarto site on GitHub Pages; Supabase for live responses and the instructor-controlled reveal.
+Classroom website and polling app for a data-ethics lesson, "Evaluating Evidence on Education Technology." Students read nine anonymized study summaries, rate direction and credibility, see sources revealed, rate again, and vote on five evidence standards. Quarto site on GitHub Pages; Supabase for live responses and the instructor-controlled reveal.
 
 ## Layout
 
-- `content/studies_public.yml`: the ten cards plus one news item. No authors, institutions, companies, products, or publications. `build_cards.py` refuses to build if any term in `content/banned_terms.txt` appears.
+- `content/studies_public.yml`: the nine cards plus one news item. No authors, institutions, companies, products, or publications. `build_cards.py` refuses to build if any term in `content/banned_terms.txt` appears.
 - `content/study_reveals.yml`: citations, affiliations, funding, relationships. **Git-ignored.** Loaded into the database with `supabase/seed/load_reveals.py`.
 - `content/sources_verified.yml`: what was checked, where, and figure licences.
 - `supabase/migrations/`: schema, row-level security, and the functions students call. Students (anon key) have no direct table access; every write goes through a function that checks the session phase in the database.

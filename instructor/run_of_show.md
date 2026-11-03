@@ -9,7 +9,7 @@ Before class: open the dashboard, create the session (code e.g. ETHICS1), save d
 | 0:18 | reading | 6 | Group discussion, 8 min [6]. |
 | 0:26 | **rating_pre** | 7 | Presentations, 2 min per group [8 min total]. Remind students to submit ratings before the lock. |
 | 0:36 | **locked** | 8–9 | **Lock first.** Then show pre-reveal results (slide 9 or dashboard). |
-| 0:41 | **revealed** | 10 | Reveal. Students open the studies page. Walk through B vs F, A vs N, G vs H, and J. |
+| 0:41 | **revealed** | 10 | Reveal. Students open the studies page. Walk through B vs F, A vs N, and G vs H. |
 | 0:47 | **rating_post** | 11 | Second rating for their two studies, 90 seconds. |
 | 0:49 | locked view | 12–13 | Before/after per study. Who moved and why. The two cautions. |
 | 0:54 | **standards_submit** | 14 | One standard each, 3 min. |

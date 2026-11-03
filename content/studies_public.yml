@@ -198,25 +198,3 @@ studies:
     **A limitation the authors do not state.** The study measured total screen time, mostly television and video, in children aged two to five. It did not measure instructional software or any use in school. Coefficients of −0.06 to −0.08 are small, and the study cannot say what else in a household changes when a two-year-old watches 17 hours a week.
 
     **Who produced it and why.** University psychologists and pediatric researchers in Canada conducted the study with funding from a provincial health research agency, a children's hospital foundation, and a national research chairs program. The paper was peer reviewed in a pediatrics journal. The funders had no role in the analysis. No author reported a relationship with a technology company.
-
-- id: s10
-  label: J
-  display_order: 10
-  kind: "Impact evaluation, graduate dissertation with a data partnership"
-  public_title: "Virtual tutoring assigned by a diagnostic cutoff"
-  figure:
-    path: images/fig_s10_estimates.png
-    alt: "Two binned scatterplots of reading scores against distance from the eligibility cutoff: spring level on the left and spring-to-spring gain on the right, each with a fitted line on either side of the cutoff."
-    caption: "Binned plots at the eligibility cutoff for reading: spring level (left) and spring-to-spring gain (right). Figure from the source manuscript; attribution given at reveal."
-  card: |
-    **What was studied.** A virtual tutoring program integrated with a personalized learning platform in a large urban district in the Northeastern United States, piloted in grades 3, 4, and 6 in 2024–25. Students who scored at or below the 25th percentile on the platform's September diagnostic were assigned to tutoring. The question was whether assignment improved reading and mathematics achievement, both for students near the cutoff and for the whole assigned population.
-
-    **How.** Four related designs on the same two-year panel of interim assessment scores from 23 schools. A regression discontinuity compared students just below and just above the cutoff. A difference-in-discontinuities removed a gap that already existed at baseline. An inverse-probability-weighted difference-in-differences extended the comparison to all assigned students, with the authors showing algebraically that this estimator equals the discontinuity estimator when restricted to students near the cutoff. An event study with six time points checked for pre-existing trends. The reading sample had 1,015 assigned and 1,598 non-assigned students; mathematics had 973 and 1,669. About 45% of assigned students never received tutoring, so all estimates are effects of assignment, not of tutoring received.
-
-    **What was found.** In reading, the effect of assignment was 0.11 standard deviations at the cutoff, 0.18 under the aligned estimator for the same near-cutoff students, and 0.25 for the full assigned population; gains rose with distance below the cutoff. In mathematics, the cutoff estimate was null once the baseline gap was removed, and the full-population estimates were negative (−0.12) but depended on one identification strategy and shrank toward zero under alternative weighting. The authors "read the mathematics evidence as ruling out benefit rather than demonstrating harm."
-
-    **Limitations the authors state.** The rise in reading effects with assignment depth could reflect differential growth among low scorers rather than larger treatment effects. The mathematics estimates cannot distinguish a small negative effect from residual confounding. Outcomes are interim assessments, not state tests.
-
-    **A limitation the authors do not state.** One district, one year, three grades.
-
-    **Who produced it and why.** The first author is a doctoral student; the manuscript is a dissertation chapter. The company that makes the platform and runs the tutoring provided the student-level data under a data use agreement. The first author previously worked in that company's research group, and one co-author is a researcher at the company. A federal research training grant supported the work. Further details are given at the reveal.

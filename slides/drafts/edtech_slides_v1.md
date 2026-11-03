@@ -27,7 +27,7 @@ Leave this up until the join count on the dashboard matches the room. Students p
 What evidence would convince a school district that an education technology improved student learning?
 
 - Define the technology and the outcome (10 min)
-- Read, rate, and present ten anonymized studies (35 min)
+- Read, rate, and present nine anonymized studies (35 min)
 - Reveal who produced them; rate again (10 min)
 - Agree on five evidence standards (20 min)
 
@@ -61,7 +61,7 @@ Education technology: tools designed to support student learning.
 Not today: devices in general, administrative systems, screen time as such.
 
 ::: notes
-State the definition and the exclusions. AI is included but is not the focus; two of the ten studies are about AI tools.
+State the definition and the exclusions. AI is included but is not the focus; two of the nine studies are about AI tools.
 
 One study in the set is about general screen time and one is about home computers. They are included so the class can ask whether evidence about the broader category transfers to purposeful instructional tools.
 :::
@@ -159,7 +159,6 @@ A and N. Study A is the OECD report: a hill-shaped correlation that the report i
 
 G and H. Both are randomized trials of the same kind of AI chatbot, both from 2025, both independent of the vendor. G found 0.23 standard deviations in English after six weeks of supervised sessions. H found a 17 percent drop on the unassisted exam. Independence did not produce agreement; the designs asked different questions.
 
-J. The dissertation chapter. The company provided the data, a co-author works for the company, and the first author, who is me, previously worked in the company's research group. The data use agreement says the dissertation could be written and submitted regardless of the findings. The result was mixed: positive in reading, no benefit in mathematics. The company's own earlier evaluation of the same program reported 0.51 standard deviations. Ask the class what safeguards they would want to see before trusting J, and whether the mixed finding is itself evidence about the safeguards.
 :::
 
 # Headline, 15 Sept 2015: Computers 'do not improve' pupil results, says OECD
@@ -189,7 +188,7 @@ Phase: rating_post. Ninety seconds. Then return to the dashboard.
 [Live: pre- and post-reveal credibility distributions by study; how many raised, lowered, or kept their rating]
 
 ::: notes
-Ask who moved and why. Expect B to drop and F to hold or rise; expect J to be the most contested.
+Ask who moved and why. Expect B to drop and F to hold or rise.
 
 Two cautions, said plainly. First, a conflict of interest is a reason for scrutiny, not dismissal. Study B's design would be weak with any author; the company authorship tells you where to look, not what you will find. Second, independence is not causality. Study A has no vendor anywhere near it and still cannot support a causal claim. The question is always what the design can identify, and then who had reasons to shade it.
 :::
@@ -262,7 +261,6 @@ Continued on the next slide.
 - G. De Simone et al. (2025). *From Chalkboards to Chatbots.* World Bank PRWP 11125.
 - H. Bastani et al. (2025). Generative AI without guardrails can harm learning. *PNAS*, 122(26).
 - I. Madigan et al. (2019). Screen time and developmental screening. *JAMA Pediatrics*, 173(3).
-- J. Erickson, Wong & Dray (2026). *Generalizing Beyond the Cutoff.* Dissertation chapter, UVA.
 - N. Coughlan (2015, Sept 15). Computers 'do not improve' pupil results, says OECD. *BBC News.*
 
 Site and packet: steffenerickson.github.io/edtech-evidence-lab
