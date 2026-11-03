@@ -1,6 +1,6 @@
 # edtech-evidence-lab
 
-Classroom website and polling app for a data-ethics lesson, "Evaluating Evidence on Education Technology." Students read nine anonymized study summaries, rate direction and credibility, see sources revealed, rate again, and vote on five evidence standards. Quarto site on GitHub Pages; Supabase for live responses and the instructor-controlled reveal.
+Classroom website and polling app for a data-ethics lesson, "Evaluating Evidence on Education Technology." Students read nine anonymized study summaries, rate direction and credibility, see sources revealed, discuss, and vote on five evidence standards. Quarto site on GitHub Pages; Supabase for live responses and the instructor-controlled reveal.
 
 ## Layout
 

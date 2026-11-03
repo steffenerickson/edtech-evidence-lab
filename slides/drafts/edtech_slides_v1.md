@@ -28,7 +28,7 @@ What evidence would convince a school district that an education technology impr
 
 - Define the technology and the outcome (10 min)
 - Read, rate, and present nine anonymized studies (35 min)
-- Reveal who produced them; rate again (10 min)
+- Reveal who produced them; discuss (10 min)
 - Agree on five evidence standards (20 min)
 
 ::: notes
@@ -173,29 +173,19 @@ The headline above it is Source N. Ask: what would the headline have to say to b
 Figure reproduced from OECD (2015) under the OECD's terms for teaching materials, with attribution.
 :::
 
-# Poll 3: Rate Again
+# After the Reveal
 
-On the Rate page, rate your two studies a second time, now that you know the sources.
-
-Credibility 1 to 5. Same scale.
+[Live: pre-reveal credibility distributions by study, now with sources known]
 
 ::: notes
-Phase: rating_post. Ninety seconds. Then return to the dashboard.
-:::
-
-# Before and After
-
-[Live: pre- and post-reveal credibility distributions by study; how many raised, lowered, or kept their rating]
-
-::: notes
-Ask who moved and why. Expect B to drop and F to hold or rise.
+Ask which ratings students would change now, and why. Expect B to fall in their estimation and F to hold or rise.
 
 Two cautions, said plainly. First, a conflict of interest is a reason for scrutiny, not dismissal. Study B's design would be weak with any author; the company authorship tells you where to look, not what you will find. Second, independence is not causality. Study A has no vendor anywhere near it and still cannot support a causal claim. The question is always what the design can identify, and then who had reasons to shade it.
 :::
 
 # What Changed and What Did Not
 
-[Three observations from the before-and-after display, written live]
+[Three observations from the discussion, written live]
 
 ::: notes
 Write three things the class noticed, in their words. Keep them on the board; the standards vote comes next and these are the raw material.
@@ -203,7 +193,7 @@ Write three things the class noticed, in their words. Keep them on the board; th
 Transition: "You have just applied standards without naming them. Now name them."
 :::
 
-# Poll 4: Propose a Standard
+# Poll 3: Propose a Standard
 
 On the Standards page, one sentence: a standard the class should use to decide whether a study, or a body of studies, is credible evidence that an education technology changed student learning.
 

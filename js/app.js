@@ -24,7 +24,6 @@
     rating_pre: "Submit your ratings now. They lock when the instructor closes this step.",
     locked: "Ratings are locked. Watch the screen.",
     revealed: "Sources are revealed. Open each study to see who produced it.",
-    rating_post: "Rate your two studies again, now that you know the sources.",
     standards_submit: "Propose one standard for credible evidence.",
     standards_sort: "The class is sorting proposed standards.",
     standards_vote: "Vote for up to five standards.",

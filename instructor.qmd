@@ -34,7 +34,7 @@ title: "Instructor dashboard"
 <div class="phase-buttons" id="phase-buttons"></div>
 <p style="margin-top:.75rem"><label><input type="checkbox" id="show-results"> Students can see aggregate results</label>
 <label style="margin-left:1rem"><input type="checkbox" id="show-reasons"> Show written reasons below</label></p>
-<p class="meta">Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → revealed → rating_post → standards_submit → standards_sort → standards_vote → final. Lock before revealing.</p>
+<p class="meta">Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → revealed → standards_submit → standards_sort → standards_vote → final. Lock before revealing.</p>
 </section>
 
 <section>
@@ -43,7 +43,6 @@ title: "Instructor dashboard"
 <div><div class="count" id="n-participants">0</div><div class="meta">joined</div></div>
 <div><div class="count" id="n-definitions">0</div><div class="meta">definitions</div></div>
 <div><div class="count" id="n-pre">0</div><div class="meta">pre ratings</div></div>
-<div><div class="count" id="n-post">0</div><div class="meta">post ratings</div></div>
 <div><div class="count" id="n-subs">0</div><div class="meta">standards proposed</div></div>
 <div><div class="count" id="n-votes">0</div><div class="meta">voters</div></div>
 </div>
@@ -85,7 +84,7 @@ title: "Instructor dashboard"
 (async function () {
   const { sb, rpc, el, status, bars, DIRECTIONS } = Lab;
   const cards = await (await fetch("js/cards.json")).json();
-  const PHASES = ["lobby","defining","reading","rating_pre","locked","revealed","rating_post","standards_submit","standards_sort","standards_vote","final","closed"];
+  const PHASES = ["lobby","defining","reading","rating_pre","locked","revealed","standards_submit","standards_sort","standards_vote","final","closed"];
   let session = null, timer = null;
 
   async function q(table, filters = {}) {
@@ -178,7 +177,6 @@ title: "Instructor dashboard"
     document.getElementById("n-participants").textContent = parts.length;
     document.getElementById("n-definitions").textContent = defs.length;
     document.getElementById("n-pre").textContent = ratings.filter(r => r.phase === "pre").length;
-    document.getElementById("n-post").textContent = ratings.filter(r => r.phase === "post").length;
     document.getElementById("n-subs").textContent = subs.length;
     document.getElementById("n-votes").textContent = new Set(votes.map(v => v.participant_id)).size;
     document.getElementById("definitions").replaceChildren(...defs.map(d => el("li", {}, d.text)));
@@ -190,19 +188,13 @@ title: "Instructor dashboard"
     for (const c of cards) {
       const rows = ratings.filter(r => r.study_id === c.id); if (!rows.length) continue;
       const box = el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, c.public_title));
-      for (const ph of ["pre", "post"]) {
+      for (const ph of ["pre"]) {
         const sub = rows.filter(r => r.phase === ph); if (!sub.length) continue;
         const dir = {}, cred = {}; sub.forEach(r => { const d = r.direction || "no answer"; dir[d] = (dir[d] || 0) + 1; cred[r.credibility] = (cred[r.credibility] || 0) + 1; });
         const mean = (sub.reduce((a, r) => a + r.credibility, 0) / sub.length).toFixed(2);
-        box.append(el("strong", {}, `${ph === "pre" ? "Before" : "After"} reveal (n=${sub.length}, mean credibility ${mean})`));
+        box.append(el("strong", {}, `n=${sub.length}, mean credibility ${mean}`));
         const d1 = el("div"), d2 = el("div"); bars(d1, dir, DIRECTIONS, ph); bars(d2, cred, [1,2,3,4,5], ph); box.append(d1, d2);
         if (session.show_reasons) box.append(el("ul", { class: "meta" }, ...sub.filter(r => r.reason).map(r => el("li", {}, `(${r.credibility}) ${r.reason}`))));
-      }
-      if (rows.some(r => r.phase === "post")) {
-        const byP = {}; rows.forEach(r => (byP[r.participant_id] = byP[r.participant_id] || {})[r.phase] = r.credibility);
-        const both = Object.values(byP).filter(x => x.pre && x.post);
-        const up = both.filter(x => x.post > x.pre).length, down = both.filter(x => x.post < x.pre).length;
-        box.append(el("div", { class: "meta" }, `${both.length} rated twice: ${up} raised, ${down} lowered, ${both.length - up - down} unchanged; ${Object.values(byP).filter(x => x.pre && !x.post).length} did not rate again.`));
       }
       grid.append(box);
     }
