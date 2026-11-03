@@ -35,3 +35,26 @@ button:disabled { opacity: .5; }
 textarea, input[type=text], input[type=email], input[type=password] { width: 100%; max-width: 32rem; padding: .5rem; border: 1px solid var(--line); border-radius: 6px; font-size: 1rem; }
 .count { font-size: 2rem; font-weight: 600; }
 @media (max-width: 600px) { .bar .label { width: 5.5rem; } }
+
+/* Results page */
+.results-section { margin: 2rem 0; }
+.results-section h2 { font-size: 1.35rem; border-bottom: 2px solid var(--accent); padding-bottom: .25rem; }
+.defs li { margin: .4rem 0; }
+.overview { display: grid; gap: .6rem; margin: .5rem 0 1rem; }
+.ov-row { display: grid; grid-template-columns: minmax(9rem, 1.2fr) 2fr 2fr; gap: .6rem; align-items: center; }
+.ov-label .meta { display: block; font-size: .8rem; }
+.ov-bar { display: flex; align-items: center; gap: .5rem; }
+.ov-bar .track { flex: 1; height: 1.4rem; background: #eef0f3; border-radius: 4px; overflow: hidden; }
+.ov-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+.ov-n { font-size: .8rem; color: #222; white-space: nowrap; min-width: 4.5rem; }
+.stack { display: flex; height: 1.4rem; border-radius: 4px; overflow: hidden; background: #eef0f3; }
+.stack .seg { color: #fff; font-size: .72rem; line-height: 1.4rem; text-align: center; white-space: nowrap; overflow: hidden; }
+.legend { display: flex; flex-wrap: wrap; gap: .8rem; font-size: .8rem; margin: .3rem 0 1rem; }
+.legend i { display: inline-block; width: .8rem; height: .8rem; border-radius: 2px; margin-right: .3rem; vertical-align: -1px; }
+.standards-tally { padding-left: 1.2rem; }
+.standards-tally li { margin: .7rem 0; }
+.standards-tally .st-text { margin-bottom: .2rem; }
+.standards-tally .winner .st-text { font-weight: 600; }
+.standards-tally .check { color: #2a7f62; }
+.winners { background: #f3faf6; border-left: 4px solid #2a7f62; margin-bottom: 1rem; }
+@media (max-width: 600px) { .ov-row { grid-template-columns: 1fr; gap: .25rem; } }

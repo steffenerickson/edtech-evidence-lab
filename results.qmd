@@ -10,33 +10,77 @@ title: "Class results"
   const { rpc, store, el, bars, watchSession, DIRECTIONS } = Lab;
   const cards = await (await fetch("js/cards.json")).json();
   const out = document.getElementById("out");
+  const DIR_COLORS = { positive: "#2a7f62", negative: "#b23a48", mixed: "#e08a1e", null: "#7a7a7a", inconclusive: "#b8b8b8" };
+  const DIR_TEXT = { positive: "Improved", negative: "Worsened", mixed: "Mixed", null: "No effect", inconclusive: "Can't tell" };
+
+  function section(title, sub) { return el("section", { class: "results-section" }, el("h2", {}, title), sub ? el("p", { class: "meta" }, sub) : ""); }
+
+  function definitions(r) {
+    if (!r.definitions.length) return null;
+    const s = section("1. What counts as education technology?", `${r.definitions.length} definitions submitted`);
+    s.append(el("ol", { class: "defs" }, ...r.definitions.map(d => el("li", {}, d))));
+    return s;
+  }
+
+  function ratings(r) {
+    const rows = r.ratings.filter(x => x.phase === "pre");
+    if (!rows.length) return null;
+    const s = section("2. How the class rated the studies", "Credibility from 1 (not credible) to 5 (highly credible), with the direction each reader took from the study.");
+    const stats = cards.map(c => {
+      const sub = rows.filter(x => x.study_id === c.id); const n = sub.reduce((a, x) => a + x.n, 0);
+      if (!n) return null;
+      const mean = sub.reduce((a, x) => a + x.credibility * x.n, 0) / n;
+      const dir = {}; sub.forEach(x => { const k = x.direction || "inconclusive"; dir[k] = (dir[k] || 0) + x.n; });
+      const cred = {}; sub.forEach(x => { cred[x.credibility] = (cred[x.credibility] || 0) + x.n; });
+      return { c, n, mean, dir, cred };
+    }).filter(Boolean);
+    // Overview: one row per study, sorted by mean credibility
+    const ov = el("div", { class: "overview" });
+    [...stats].sort((a, b) => b.mean - a.mean).forEach(st => {
+      const row = el("div", { class: "ov-row" });
+      row.append(el("div", { class: "ov-label" }, el("strong", {}, `Study ${st.c.label}`), el("span", { class: "meta" }, ` ${st.c.public_title}`)));
+      const credBar = el("div", { class: "ov-bar" }, el("div", { class: "track" }, el("div", { class: "ov-fill", style: `width:${(100 * st.mean / 5).toFixed(0)}%` })), el("span", { class: "ov-n" }, `${st.mean.toFixed(1)} (n=${st.n})`));
+      const stack = el("div", { class: "stack" }, ...DIRECTIONS.filter(d => st.dir[d]).map(d => el("div", { class: "seg", title: `${DIR_TEXT[d]}: ${st.dir[d]}`, style: `width:${(100 * st.dir[d] / st.n).toFixed(1)}%;background:${DIR_COLORS[d]}` }, st.dir[d] / st.n >= .18 ? DIR_TEXT[d] : "")));
+      row.append(credBar, stack); ov.append(row);
+    });
+    const legend = el("div", { class: "legend" }, ...DIRECTIONS.map(d => el("span", {}, el("i", { style: `background:${DIR_COLORS[d]}` }), DIR_TEXT[d])));
+    s.append(el("h3", {}, "Mean credibility, highest first"), ov, el("div", { class: "meta" }, "Upper bar: mean credibility out of 5. Lower bar: what readers said the study found."), legend);
+    // Detail: credibility distribution per study
+    const grid = el("div", { class: "results-grid" });
+    stats.forEach(st => { const box = el("div", { class: "card" }, el("h4", {}, `Study ${st.c.label}`), el("div", { class: "meta" }, st.c.public_title)); const d = el("div"); bars(d, st.cred, [5,4,3,2,1]); box.append(d); grid.append(box); });
+    const det = el("details", {}, el("summary", {}, "Credibility distribution for each study"), grid);
+    s.append(det);
+    return s;
+  }
+
+  function standards(r) {
+    const st = r.standards.filter(x => x.is_ballot_option);
+    if (!st.length) return null;
+    const total = st.reduce((a, x) => a + x.votes, 0);
+    const winners = st.filter(x => x.is_winner);
+    const s = section("3. Evidence standards", total ? `${total} votes cast, up to five per person` : "Ballot options, voting not yet open");
+    const list = el("ol", { class: "standards-tally" });
+    const max = Math.max(1, ...st.map(x => x.votes));
+    [...st].sort((a, b) => b.votes - a.votes || a.sort_order - b.sort_order).forEach(x => {
+      list.append(el("li", { class: x.is_winner ? "winner" : "" },
+        el("div", { class: "st-text" }, x.is_winner ? el("span", { class: "check" }, "✓ ") : "", x.label, x.scope ? el("span", { class: "meta" }, ` (${x.scope})`) : ""),
+        el("div", { class: "ov-bar" }, el("div", { class: "track" }, el("div", { class: "ov-fill", style: `width:${(100 * x.votes / max).toFixed(0)}%` })), el("span", { class: "ov-n" }, `${x.votes} vote${x.votes === 1 ? "" : "s"}`))));
+    });
+    s.append(list);
+    if (winners.length) { const w = el("div", { class: "card winners" }, el("h3", {}, "Our five standards"), el("ol", { class: "big-list" }, ...winners.sort((a, b) => a.sort_order - b.sort_order).map(x => el("li", {}, x.label)))); s.prepend(w); }
+    return s;
+  }
+
   async function render(sess) {
     out.replaceChildren();
     if (!sess.show_results) return;
     const r = await rpc("get_results", { p_join_code: sess.join_code });
     if (!r) return;
-    if (r.definitions.length) out.append(el("h3", {}, "Definitions submitted"), el("ul", {}, ...r.definitions.map(d => el("li", {}, d))));
-    const grid = el("div", { class: "results-grid" });
-    for (const c of cards) {
-      const rows = r.ratings.filter(x => x.study_id === c.id);
-      if (!rows.length) continue;
-      const box = el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, c.public_title));
-      for (const ph of ["pre"]) {
-        const sub = rows.filter(x => x.phase === ph); if (!sub.length) continue;
-        const dir = {}, cred = {};
-        sub.forEach(x => { dir[x.direction || "no answer"] = (dir[x.direction || "no answer"] || 0) + x.n; cred[x.credibility] = (cred[x.credibility] || 0) + x.n; });
-        
-        const d1 = el("div"), d2 = el("div");
-        bars(d1, dir, DIRECTIONS, ph); box.append(el("div", { class: "meta" }, "Direction"), d1);
-        bars(d2, cred, [1,2,3,4,5], ph); box.append(el("div", { class: "meta" }, "Credibility"), d2);
-      }
-      grid.append(box);
-    }
-    out.append(el("h3", {}, "Ratings"), grid);
-    const st = r.standards.filter(s => s.is_ballot_option);
-    if (st.length) { const d = el("div"); const counts = Object.fromEntries(st.map(s => [s.label, s.votes])); bars(d, counts, st.map(s => s.label)); out.append(el("h3", {}, "Standards vote"), d); }
+    const parts = [definitions(r), ratings(r), standards(r)].filter(Boolean);
+    if (!parts.length) out.append(el("p", { class: "meta" }, "Nothing to show yet."));
+    out.append(...parts);
   }
-  watchSession(sess => { document.getElementById("phase").textContent = sess.show_results ? "Live class results." : "Results appear here when the instructor turns them on."; render(sess); });
+  watchSession(sess => { document.getElementById("phase").textContent = sess.show_results ? "Live class results. This page updates on its own." : "Results appear here when the instructor turns them on."; render(sess); });
   if (!store.get().join_code) { const code = new URLSearchParams(location.search).get("code"); if (code) { store.set({ join_code: code.toUpperCase() }); location.reload(); } }
 })();
 </script>
