@@ -24,7 +24,7 @@ title: "Studies"
       const r = reveals[c.id];
       if (r) {
         const dl = el("dl", {});
-        for (const [k, v] of [["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship to the technology", r.relationships], ["Disclosure, in the document's words", r.disclosure_quote]])
+        for (const [k, v] of [["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship to the technology", r.relationships]])
           if (v) dl.append(el("dt", {}, k), el("dd", {}, v));
         if (r.url) dl.append(el("dt", {}, "Link"), el("dd", {}, el("a", { href: r.url, target: "_blank" }, r.url)));
         card.append(el("div", { class: "reveal" }, el("strong", {}, "Revealed source"), dl));
