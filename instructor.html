@@ -313,7 +313,10 @@ Submissions
 <button class="secondary" id="export-csv">
 Download aggregate CSV
 </button>
-<button class="secondary" id="purge" style="color:#b3261e">Delete this session and all responses</button>
+<button class="secondary" id="purge" style="color:#b3261e">Delete this session and all responses</button> <button class="secondary" id="purge-all" style="color:#b3261e">Delete all my sessions</button>
+</p>
+<p class="meta">
+“Delete all” includes closed sessions, which the picker above hides.
 </p>
 <div id="admin-status" class="status">
 
@@ -478,6 +481,12 @@ Download aggregate CSV
     if (!confirm(`Delete session ${session.join_code} and every response? This cannot be undone.`)) return;
     const { error } = await sb.rpc("purge_session", { p_session: session.id });
     status(document.getElementById("admin-status"), error ? error.message : "Deleted.", !error); session = null; listSessions();
+  };
+  document.getElementById("purge-all").onclick = async () => {
+    if (!confirm("Delete ALL of your sessions, including closed ones, and every response in them? This cannot be undone.")) return;
+    if (prompt('Type DELETE to confirm.') !== "DELETE") return;
+    const { data, error } = await sb.rpc("purge_all_sessions");
+    status(document.getElementById("admin-status"), error ? error.message : `Deleted ${data} session${data === 1 ? "" : "s"}.`, !error); session = null; listSessions();
   };
 
   boot();
