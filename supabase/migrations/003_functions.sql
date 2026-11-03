@@ -98,9 +98,9 @@ returns json language sql stable security definer set search_path = public as $$
         'direction', direction, 'credibility', credibility, 'n', n)), '[]'::json)
       from (select r.study_id, r.phase, r.direction, r.credibility, count(*) n
             from ratings r, s where r.session_id = s.id group by 1,2,3,4) x),
-    'standards', (select coalesce(json_agg(json_build_object('id', id, 'label', label, 'scope', scope,
-        'is_ballot_option', is_ballot_option, 'is_winner', is_winner, 'votes',
-        (select count(*) from standard_votes v where v.standard_id = st.id)) order by sort_order, id), '[]'::json)
+    'standards', (select coalesce(json_agg(json_build_object('id', st.id, 'label', st.label, 'scope', st.scope,
+        'is_ballot_option', st.is_ballot_option, 'is_winner', st.is_winner, 'votes',
+        (select count(*) from standard_votes v where v.standard_id = st.id)) order by st.sort_order, st.id), '[]'::json)
       from standards st, s where st.session_id = s.id))
   from s;
 $$;
