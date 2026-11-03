@@ -220,7 +220,7 @@ Default A–E
 <label><input type="checkbox" id="show-results"> Students can see aggregate results</label> <label style="margin-left:1rem"><input type="checkbox" id="show-reasons"> Show written reasons below</label>
 </p>
 <p class="meta">
-Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → revealed → standards_submit → standards_sort → standards_vote → final. Lock before revealing.
+Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → standards_submit → standards_sort → standards_vote → final. Lock before showing results.
 </p>
 </section>
 <section>
@@ -287,17 +287,6 @@ voters
 </section>
 <section>
 </section>
-<section id="reveal-information" class="level3">
-<h3 class="anchored" data-anchor-id="reveal-information">Reveal information</h3>
-<p class="meta">
-Visible to you at all times. Students receive it only after the phase passes <em>locked</em>.
-</p>
-<div id="reveals">
-
-</div>
-</section>
-<section>
-</section>
 <section id="standards-submissions-and-ballot" class="level3">
 <h3 class="anchored" data-anchor-id="standards-submissions-and-ballot">Standards: submissions and ballot</h3>
 <p class="meta">
@@ -336,7 +325,7 @@ Download aggregate CSV
 (async function () {
   const { sb, rpc, el, status, bars, DIRECTIONS } = Lab;
   const cards = await (await fetch("js/cards.json")).json();
-  const PHASES = ["lobby","defining","reading","rating_pre","locked","revealed","standards_submit","standards_sort","standards_vote","final","closed"];
+  const PHASES = ["lobby","defining","reading","rating_pre","locked","standards_submit","standards_sort","standards_vote","final","closed"];
   let session = null, timer = null;
 
   async function q(table, filters = {}) {
@@ -359,7 +348,6 @@ Download aggregate CSV
     document.getElementById("login").style.display = "none"; document.getElementById("dash").style.display = "";
     document.getElementById("who").textContent = user.email;
     await listSessions();
-    renderReveals();
     document.getElementById("phase-buttons").replaceChildren(...PHASES.map(p => el("button", { class: "secondary", "data-phase": p, onclick: () => setPhase(p) }, p)));
     document.getElementById("show-results").onchange = e => patchSession({ show_results: e.target.checked });
     document.getElementById("show-reasons").onchange = e => patchSession({ show_reasons: e.target.checked });
@@ -393,7 +381,7 @@ Download aggregate CSV
     if (error) return alert(error.message); session = data; paintPhase();
   }
   function setPhase(p) {
-    if (p === "revealed" && session.phase !== "locked" && !confirm("Ratings are not locked. Reveal anyway?")) return;
+    if (p === "standards_submit" && !["locked","standards_sort","standards_vote","final"].includes(session.phase) && !confirm("Ratings are not locked. Move on anyway?")) return;
     patchSession({ phase: p });
   }
   function paintPhase() {
@@ -439,7 +427,7 @@ Download aggregate CSV
     const grid = document.getElementById("ratings"); grid.replaceChildren();
     for (const c of cards) {
       const rows = ratings.filter(r => r.study_id === c.id); if (!rows.length) continue;
-      const box = el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, c.public_title));
+      const box = el("div", { class: "card" }, el("h4", {}, `Source ${c.label}`), el("div", { class: "meta" }, c.public_title));
       for (const ph of ["pre"]) {
         const sub = rows.filter(r => r.phase === ph); if (!sub.length) continue;
         const dir = {}, cred = {}; sub.forEach(r => { const d = r.direction || "no answer"; dir[d] = (dir[d] || 0) + 1; cred[r.credibility] = (cred[r.credibility] || 0) + 1; });
@@ -450,11 +438,6 @@ Download aggregate CSV
       }
       grid.append(box);
     }
-  }
-  async function renderReveals() {
-    const rv = await q("study_reveals");
-    document.getElementById("reveals").replaceChildren(...cards.map(c => { const r = rv.find(x => x.study_id === c.id); if (!r) return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, "No reveal record loaded."));
-      return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}: ${c.public_title}`), el("dl", { class: "reveal" }, ...[["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship", r.relationships]].flatMap(([k, v]) => v ? [el("dt", {}, k), el("dd", {}, v)] : []))); }));
   }
 
   // ---- standards editor

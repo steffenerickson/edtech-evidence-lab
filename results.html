@@ -198,7 +198,7 @@ Results appear here when the instructor turns them on.
     const ov = el("div", { class: "overview" });
     [...stats].sort((a, b) => b.mean - a.mean).forEach(st => {
       const row = el("div", { class: "ov-row" });
-      row.append(el("div", { class: "ov-label" }, el("strong", {}, `Study ${st.c.label}`), el("span", { class: "meta" }, ` ${st.c.public_title}`)));
+      row.append(el("div", { class: "ov-label" }, el("strong", {}, `Source ${st.c.label}`), el("span", { class: "meta" }, ` ${st.c.public_title}`)));
       const credBar = el("div", { class: "ov-bar" }, el("div", { class: "track" }, el("div", { class: "ov-fill", style: `width:${(100 * st.mean / 5).toFixed(0)}%` })), el("span", { class: "ov-n" }, `${st.mean.toFixed(1)} (n=${st.n})`));
       const stack = el("div", { class: "stack" }, ...DIRECTIONS.filter(d => st.dir[d]).map(d => el("div", { class: "seg", title: `${DIR_TEXT[d]}: ${st.dir[d]}`, style: `width:${(100 * st.dir[d] / st.n).toFixed(1)}%;background:${DIR_COLORS[d]}` }, st.dir[d] / st.n >= .18 ? DIR_TEXT[d] : "")));
       row.append(credBar, stack); ov.append(row);
@@ -207,7 +207,7 @@ Results appear here when the instructor turns them on.
     s.append(el("h3", {}, "Mean credibility, highest first"), ov, el("div", { class: "meta" }, "Upper bar: mean credibility out of 5. Lower bar: what readers said the study found."), legend);
     // Detail: credibility distribution per study
     const grid = el("div", { class: "results-grid" });
-    stats.forEach(st => { const box = el("div", { class: "card" }, el("h4", {}, `Study ${st.c.label}`), el("div", { class: "meta" }, st.c.public_title)); const d = el("div"); bars(d, st.cred, [5,4,3,2,1]); box.append(d); grid.append(box); });
+    stats.forEach(st => { const box = el("div", { class: "card" }, el("h4", {}, `Source ${st.c.label}`), el("div", { class: "meta" }, st.c.public_title)); const d = el("div"); bars(d, st.cred, [5,4,3,2,1]); box.append(d); grid.append(box); });
     const det = el("details", {}, el("summary", {}, "Credibility distribution for each study"), grid);
     s.append(det);
     return s;

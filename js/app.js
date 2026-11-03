@@ -20,10 +20,9 @@
   const PHASE_TEXT = {
     lobby: "Waiting for the instructor to start.",
     defining: "Poll 1 is open: submit your definition of education technology.",
-    reading: "Read your group's two studies. You may start rating when ready.",
+    reading: "Read your group's two sources. You may start rating when ready.",
     rating_pre: "Submit your ratings now. They lock when the instructor closes this step.",
     locked: "Ratings are locked. Watch the screen.",
-    revealed: "Sources are revealed. Open each study to see who produced it.",
     standards_submit: "Propose one standard for credible evidence.",
     standards_sort: "The class is sorting proposed standards.",
     standards_vote: "Vote for up to five standards.",
