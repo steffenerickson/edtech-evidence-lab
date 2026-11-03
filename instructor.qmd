@@ -1,0 +1,258 @@
+---
+title: "Instructor dashboard"
+---
+
+::: {#login}
+<form onsubmit="return false;">
+<label>Email<br><input type="email" id="email" autocomplete="username"></label>
+<label style="display:block;margin-top:.5rem">Password<br><input type="password" id="password" autocomplete="current-password"></label>
+<p style="margin-top:.75rem"><button class="primary" id="login-btn">Sign in</button></p>
+<div class="status" id="login-status"></div>
+</form>
+:::
+
+::: {#dash .dash style="display:none"}
+<p class="meta">Signed in as <span id="who"></span>. <a href="#" id="logout">Sign out</a></p>
+
+<section>
+### Session
+<div id="session-pick"></div>
+<p><input type="text" id="new-code" placeholder="New session code, e.g. ETHICS1" style="max-width:16rem"> <button class="secondary" id="new-session">Create session</button></p>
+<p>Student link: <a id="student-link" target="_blank"></a></p>
+<p><img id="qr" alt="QR code to the join page" style="max-width:220px"></p>
+</section>
+
+<section>
+### Groups
+<p class="meta">Two studies per group. Default assignment fills groups A–E in order; edit and save.</p>
+<div id="groups"></div>
+<p><button class="secondary" id="default-groups">Default A–E</button> <button class="primary" id="save-groups">Save groups</button> <span class="status" id="groups-status"></span></p>
+</section>
+
+<section>
+### Phase
+<div class="phase-buttons" id="phase-buttons"></div>
+<p style="margin-top:.75rem"><label><input type="checkbox" id="show-results"> Students can see aggregate results</label>
+<label style="margin-left:1rem"><input type="checkbox" id="show-reasons"> Show written reasons below</label></p>
+<p class="meta">Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → revealed → rating_post → standards_submit → standards_sort → standards_vote → final. Lock before revealing.</p>
+</section>
+
+<section>
+### Live counts
+<div style="display:flex;gap:2rem;flex-wrap:wrap">
+<div><div class="count" id="n-participants">0</div><div class="meta">joined</div></div>
+<div><div class="count" id="n-definitions">0</div><div class="meta">definitions</div></div>
+<div><div class="count" id="n-pre">0</div><div class="meta">pre ratings</div></div>
+<div><div class="count" id="n-post">0</div><div class="meta">post ratings</div></div>
+<div><div class="count" id="n-subs">0</div><div class="meta">standards proposed</div></div>
+<div><div class="count" id="n-votes">0</div><div class="meta">voters</div></div>
+</div>
+</section>
+
+<section>
+### Definitions
+<ul id="definitions"></ul>
+</section>
+
+<section>
+### Ratings by study
+<div class="results-grid" id="ratings"></div>
+</section>
+
+<section>
+### Reveal information
+<p class="meta">Visible to you at all times. Students receive it only after the phase passes <em>locked</em>.</p>
+<div id="reveals"></div>
+</section>
+
+<section>
+### Standards: submissions and ballot
+<p class="meta">Create ballot options, then assign each submission to one. Mark scope. Toggle "on ballot". After voting, mark the five winners (ties: resolve by voice vote, then mark).</p>
+<div id="standards-editor"></div>
+<p><input type="text" id="new-standard" placeholder="New ballot option label" style="max-width:28rem"> <button class="secondary" id="add-standard">Add</button></p>
+<h4>Submissions</h4>
+<div id="submissions"></div>
+</section>
+
+<section>
+### Export and cleanup
+<p><button class="secondary" id="export-csv">Download aggregate CSV</button> <button class="secondary" id="purge" style="color:#b3261e">Delete this session and all responses</button></p>
+<div class="status" id="admin-status"></div>
+</section>
+:::
+
+<script>
+(async function () {
+  const { sb, rpc, el, status, bars, DIRECTIONS } = Lab;
+  const cards = await (await fetch("js/cards.json")).json();
+  const PHASES = ["lobby","defining","reading","rating_pre","locked","revealed","rating_post","standards_submit","standards_sort","standards_vote","final","closed"];
+  let session = null, timer = null;
+
+  async function q(table, filters = {}) {
+    let qq = sb.from(table).select("*");
+    for (const [k, v] of Object.entries(filters)) qq = qq.eq(k, v);
+    const { data, error } = await qq; if (error) throw new Error(error.message); return data;
+  }
+
+  // ---- auth
+  document.getElementById("login-btn").onclick = async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: document.getElementById("email").value, password: document.getElementById("password").value });
+    if (error) return status(document.getElementById("login-status"), error.message, false);
+    boot();
+  };
+  document.getElementById("logout").onclick = async e => { e.preventDefault(); await sb.auth.signOut(); location.reload(); };
+
+  async function boot() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+    document.getElementById("login").style.display = "none"; document.getElementById("dash").style.display = "";
+    document.getElementById("who").textContent = user.email;
+    await listSessions();
+    renderReveals();
+    document.getElementById("phase-buttons").replaceChildren(...PHASES.map(p => el("button", { class: "secondary", "data-phase": p, onclick: () => setPhase(p) }, p)));
+    document.getElementById("show-results").onchange = e => patchSession({ show_results: e.target.checked });
+    document.getElementById("show-reasons").onchange = e => patchSession({ show_reasons: e.target.checked });
+    if (timer) clearInterval(timer); timer = setInterval(refresh, window.EDTECH_CONFIG.pollMs);
+  }
+
+  // ---- sessions
+  async function listSessions() {
+    const rows = (await q("sessions")).filter(s => s.phase !== "closed").sort((a, b) => b.created_at.localeCompare(a.created_at));
+    const sel = el("select", { style: "padding:.4rem;font-size:1rem", onchange: e => pick(rows.find(r => r.id === e.target.value)) },
+      el("option", { value: "" }, "Pick a session"), ...rows.map(r => el("option", { value: r.id }, `${r.join_code} (${r.phase}, ${r.created_at.slice(0, 10)})`)));
+    document.getElementById("session-pick").replaceChildren(sel);
+    if (rows.length && !session) { sel.value = rows[0].id; pick(rows[0]); }
+  }
+  document.getElementById("new-session").onclick = async () => {
+    const code = document.getElementById("new-code").value.trim().toUpperCase(); if (!code) return;
+    const { data: { user } } = await sb.auth.getUser();
+    const { data, error } = await sb.from("sessions").insert({ join_code: code, owner: user.id }).select().single();
+    if (error) return alert(error.message);
+    session = data; await listSessions(); pick(data); defaultGroups(); saveGroups();
+  };
+  async function pick(s) {
+    session = s; if (!s) return;
+    const link = `${window.EDTECH_CONFIG.siteUrl}?code=${s.join_code}`;
+    const a = document.getElementById("student-link"); a.href = link; a.textContent = link;
+    document.getElementById("qr").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(link)}`;
+    await loadGroups(); refresh();
+  }
+  async function patchSession(patch) {
+    const { data, error } = await sb.from("sessions").update(patch).eq("id", session.id).select().single();
+    if (error) return alert(error.message); session = data; paintPhase();
+  }
+  function setPhase(p) {
+    if (p === "revealed" && session.phase !== "locked" && !confirm("Ratings are not locked. Reveal anyway?")) return;
+    patchSession({ phase: p });
+  }
+  function paintPhase() {
+    document.querySelectorAll("#phase-buttons button").forEach(b => b.classList.toggle("current", b.dataset.phase === session.phase));
+    document.getElementById("show-results").checked = session.show_results; document.getElementById("show-reasons").checked = session.show_reasons;
+  }
+
+  // ---- groups
+  const GROUPS = ["A","B","C","D","E","F"];
+  let groupMap = {};
+  function paintGroups() {
+    document.getElementById("groups").replaceChildren(...GROUPS.map(g => el("div", { class: "bar" }, el("span", { class: "label" }, `Group ${g}`),
+      el("div", { class: "choice-group" }, ...cards.map(c => el("label", { style: "min-height:32px;padding:.2rem .5rem" }, el("input", { type: "checkbox", value: c.id, ...((groupMap[g] || []).includes(c.id) ? { checked: "" } : {}), onchange: e => { groupMap[g] = groupMap[g] || []; if (e.target.checked) groupMap[g].push(c.id); else groupMap[g] = groupMap[g].filter(x => x !== c.id); } }), el("span", {}, c.label)))))));
+  }
+  async function loadGroups() { groupMap = {}; (await q("group_assignments", { session_id: session.id })).forEach(r => (groupMap[r.group_code] = groupMap[r.group_code] || []).push(r.study_id)); paintGroups(); }
+  function defaultGroups() { groupMap = {}; const ids = cards.filter(c => c.kind !== "news").map(c => c.id); ids.forEach((id, i) => (groupMap[GROUPS[Math.floor(i / 2)]] = groupMap[GROUPS[Math.floor(i / 2)]] || []).push(id)); paintGroups(); }
+  async function saveGroups() {
+    await sb.from("group_assignments").delete().eq("session_id", session.id);
+    const rows = Object.entries(groupMap).flatMap(([g, ids]) => ids.map(id => ({ session_id: session.id, group_code: g, study_id: id })));
+    const { error } = rows.length ? await sb.from("group_assignments").insert(rows) : {};
+    status(document.getElementById("groups-status"), error ? error.message : "Saved.", !error);
+  }
+  document.getElementById("default-groups").onclick = defaultGroups;
+  document.getElementById("save-groups").onclick = saveGroups;
+
+  // ---- live refresh
+  async function refresh() {
+    if (!session) return;
+    const [sess] = await q("sessions", { id: session.id }); if (sess) { session = sess; paintPhase(); }
+    const [parts, defs, ratings, subs, votes, stds] = await Promise.all([
+      q("participants", { session_id: session.id }), q("definitions", { session_id: session.id }), q("ratings", { session_id: session.id }),
+      q("standard_submissions", { session_id: session.id }), q("standard_votes", { session_id: session.id }), q("standards", { session_id: session.id })]);
+    document.getElementById("n-participants").textContent = parts.length;
+    document.getElementById("n-definitions").textContent = defs.length;
+    document.getElementById("n-pre").textContent = ratings.filter(r => r.phase === "pre").length;
+    document.getElementById("n-post").textContent = ratings.filter(r => r.phase === "post").length;
+    document.getElementById("n-subs").textContent = subs.length;
+    document.getElementById("n-votes").textContent = new Set(votes.map(v => v.participant_id)).size;
+    document.getElementById("definitions").replaceChildren(...defs.map(d => el("li", {}, d.text)));
+    paintRatings(ratings, parts);
+    paintStandards(stds, subs, votes);
+  }
+  function paintRatings(ratings, parts) {
+    const grid = document.getElementById("ratings"); grid.replaceChildren();
+    for (const c of cards) {
+      const rows = ratings.filter(r => r.study_id === c.id); if (!rows.length) continue;
+      const box = el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, c.public_title));
+      for (const ph of ["pre", "post"]) {
+        const sub = rows.filter(r => r.phase === ph); if (!sub.length) continue;
+        const dir = {}, cred = {}; sub.forEach(r => { const d = r.direction || "no answer"; dir[d] = (dir[d] || 0) + 1; cred[r.credibility] = (cred[r.credibility] || 0) + 1; });
+        const mean = (sub.reduce((a, r) => a + r.credibility, 0) / sub.length).toFixed(2);
+        box.append(el("strong", {}, `${ph === "pre" ? "Before" : "After"} reveal (n=${sub.length}, mean credibility ${mean})`));
+        const d1 = el("div"), d2 = el("div"); bars(d1, dir, DIRECTIONS, ph); bars(d2, cred, [1,2,3,4,5], ph); box.append(d1, d2);
+        if (session.show_reasons) box.append(el("ul", { class: "meta" }, ...sub.filter(r => r.reason).map(r => el("li", {}, `(${r.credibility}) ${r.reason}`))));
+      }
+      if (rows.some(r => r.phase === "post")) {
+        const byP = {}; rows.forEach(r => (byP[r.participant_id] = byP[r.participant_id] || {})[r.phase] = r.credibility);
+        const both = Object.values(byP).filter(x => x.pre && x.post);
+        const up = both.filter(x => x.post > x.pre).length, down = both.filter(x => x.post < x.pre).length;
+        box.append(el("div", { class: "meta" }, `${both.length} rated twice: ${up} raised, ${down} lowered, ${both.length - up - down} unchanged; ${Object.values(byP).filter(x => x.pre && !x.post).length} did not rate again.`));
+      }
+      grid.append(box);
+    }
+  }
+  async function renderReveals() {
+    const rv = await q("study_reveals");
+    document.getElementById("reveals").replaceChildren(...cards.map(c => { const r = rv.find(x => x.study_id === c.id); if (!r) return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, "No reveal record loaded."));
+      return el("div", { class: "card" }, el("h4", {}, `Study ${c.label}: ${c.public_title}`), el("dl", { class: "reveal" }, ...[["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship", r.relationships], ["Disclosure", r.disclosure_quote]].flatMap(([k, v]) => v ? [el("dt", {}, k), el("dd", {}, v)] : []))); }));
+  }
+
+  // ---- standards editor
+  function paintStandards(stds, subs, votes) {
+    const ed = document.getElementById("standards-editor");
+    stds.sort((a, b) => a.sort_order - b.sort_order || a.id - b.id);
+    ed.replaceChildren(...stds.map(s => { const n = votes.filter(v => v.standard_id === s.id).length;
+      const row = el("div", { class: "bar", style: "gap:.6rem;flex-wrap:wrap" },
+        el("input", { type: "text", value: s.label, style: "max-width:26rem", onchange: e => upd(s.id, { label: e.target.value }) }),
+        el("select", { onchange: e => upd(s.id, { scope: e.target.value || null }) }, el("option", { value: "" }, "scope?"), el("option", { value: "study", ...(s.scope === "study" ? { selected: "" } : {}) }, "single study"), el("option", { value: "evidence_base", ...(s.scope === "evidence_base" ? { selected: "" } : {}) }, "evidence base")),
+        el("label", {}, el("input", { type: "checkbox", ...(s.is_ballot_option ? { checked: "" } : {}), onchange: e => upd(s.id, { is_ballot_option: e.target.checked }) }), " on ballot"),
+        el("label", {}, el("input", { type: "checkbox", ...(s.is_winner ? { checked: "" } : {}), onchange: e => upd(s.id, { is_winner: e.target.checked }) }), " winner"),
+        el("span", { class: "n", style: "width:auto" }, `${n} vote${n === 1 ? "" : "s"}`),
+        el("button", { class: "secondary", style: "min-height:32px", onclick: async () => { await sb.from("standards").delete().eq("id", s.id); refresh(); } }, "×"));
+      return row; }));
+    document.getElementById("submissions").replaceChildren(...subs.map(sub => el("div", { class: "bar", style: "gap:.6rem" }, el("span", { style: "flex:1" }, sub.text),
+      el("select", { onchange: e => sb.from("standard_submissions").update({ canonical_standard_id: e.target.value ? +e.target.value : null }).eq("id", sub.id).then(refresh) },
+        el("option", { value: "" }, "unassigned"), ...stds.map(s => el("option", { value: s.id, ...(sub.canonical_standard_id === s.id ? { selected: "" } : {}) }, s.label.slice(0, 50)))),
+      el("button", { class: "secondary", style: "min-height:32px", onclick: () => addStandard(sub.text, sub.id) }, "→ new option"))));
+  }
+  async function upd(id, patch) { const { error } = await sb.from("standards").update(patch).eq("id", id); if (error) alert(error.message); }
+  async function addStandard(label, subId) {
+    const { data, error } = await sb.from("standards").insert({ session_id: session.id, label }).select().single(); if (error) return alert(error.message);
+    if (subId) await sb.from("standard_submissions").update({ canonical_standard_id: data.id }).eq("id", subId);
+    refresh();
+  }
+  document.getElementById("add-standard").onclick = () => { const v = document.getElementById("new-standard").value.trim(); if (v) { addStandard(v); document.getElementById("new-standard").value = ""; } };
+
+  // ---- export / purge
+  document.getElementById("export-csv").onclick = async () => {
+    const ratings = await q("ratings", { session_id: session.id });
+    const lines = ["study_id,phase,direction,credibility,n"];
+    const agg = {}; ratings.forEach(r => { const k = [r.study_id, r.phase, r.direction || "", r.credibility].join(","); agg[k] = (agg[k] || 0) + 1; });
+    Object.entries(agg).forEach(([k, n]) => lines.push(`${k},${n}`));
+    const a = el("a", { href: URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" })), download: `edtech_${session.join_code}_aggregates.csv` }); a.click();
+  };
+  document.getElementById("purge").onclick = async () => {
+    if (!confirm(`Delete session ${session.join_code} and every response? This cannot be undone.`)) return;
+    const { error } = await sb.rpc("purge_session", { p_session: session.id });
+    status(document.getElementById("admin-status"), error ? error.message : "Deleted.", !error); session = null; listSessions();
+  };
+
+  boot();
+})();
+</script>

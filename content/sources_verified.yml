@@ -1,0 +1,17 @@
+# Verification record. Approved source list: Steffen Erickson, 2026-11-03.
+# Each source was located in its primary document and the card's numbers and quotes
+# were checked against it (verification agents, 2026-11-03; page numbers in the reveal file).
+approved_by: Steffen Erickson
+approved_on: 2026-11-03
+sources:
+- {id: s01, short: "OECD 2015, Students, Computers and Learning", doc: "OECD PDF, 204 pp", figure: "Fig 6.5 p.153; OECD teaching-use licence with attribution", status: verified, shown_publicly: false, note: "figure shown at reveal only (labels name OECD)"}
+- {id: s02, short: "Weatherholtz, Grimaldi & Hill 2022, Khan Academy MAP Accelerator tech report", doc: "Khan Academy PDF via khan.co/MATechReport2022, 35 pp", figure: "none embedded; no licence stated", status: verified}
+- {id: s03, short: "Dynarski et al. 2007, NCEE 2007-4005", doc: "IES PDF, 105 pp", figure: "Fig 1 p.xx; public domain", status: verified}
+- {id: s04, short: "Doss et al. 2025, RAND RR-A4180-1", doc: "RAND PDF", figure: "none embedded; RAND noncommercial terms, link only", status: verified}
+- {id: s05, short: "Malamud & Pop-Eleches 2011 QJE (NBER w15814)", doc: "NBER WP PDF; QJE metadata via Crossref", figure: "none embedded; NBER/OUP copyright", status: verified, note: "quotes from the NBER version"}
+- {id: s06, short: "Bhatt et al. 2025, PLI interim report", doc: "library card + full text", figure: "none", status: verified}
+- {id: s07, short: "De Simone et al. 2025, World Bank PRWP 11125", doc: "World Bank PDF", figure: "Fig 1 p.42; CC BY 3.0 IGO", status: verified}
+- {id: s08, short: "Bastani et al. 2025 PNAS", doc: "PMC full text + SSRN preprint", figure: "none (main effects are in Table 1); CC BY-NC-ND", status: verified}
+- {id: s09, short: "Madigan et al. 2019 JAMA Pediatrics", doc: "PMC full text + correction notice", figure: "none; AMA copyright", status: verified, note: "corrected coefficients used"}
+- {id: s10, short: "Erickson, Wong & Dray, chapter 1 short v3", doc: "local manuscript", figure: "Figure 5 (RD plots, reading), title cropped; author's own", status: verified}
+- {id: n01, short: "Coughlan, BBC News, 15 Sep 2015", doc: "live BBC page", figure: "none", status: verified}

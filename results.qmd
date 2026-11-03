@@ -1,0 +1,42 @@
+---
+title: "Class results"
+---
+
+<div class="phase-banner" id="phase">Results appear here when the instructor turns them on.</div>
+<div id="out"></div>
+
+<script>
+(async function () {
+  const { rpc, store, el, bars, watchSession, DIRECTIONS } = Lab;
+  const cards = await (await fetch("js/cards.json")).json();
+  const out = document.getElementById("out");
+  async function render(sess) {
+    out.replaceChildren();
+    if (!sess.show_results) return;
+    const r = await rpc("get_results", { p_join_code: sess.join_code });
+    if (!r) return;
+    if (r.definitions.length) out.append(el("h3", {}, "Definitions submitted"), el("ul", {}, ...r.definitions.map(d => el("li", {}, d))));
+    const grid = el("div", { class: "results-grid" });
+    for (const c of cards) {
+      const rows = r.ratings.filter(x => x.study_id === c.id);
+      if (!rows.length) continue;
+      const box = el("div", { class: "card" }, el("h4", {}, `Study ${c.label}`), el("div", { class: "meta" }, c.public_title));
+      for (const ph of ["pre", "post"]) {
+        const sub = rows.filter(x => x.phase === ph); if (!sub.length) continue;
+        const dir = {}, cred = {};
+        sub.forEach(x => { dir[x.direction || "no answer"] = (dir[x.direction || "no answer"] || 0) + x.n; cred[x.credibility] = (cred[x.credibility] || 0) + x.n; });
+        box.append(el("strong", {}, ph === "pre" ? "Before reveal" : "After reveal"));
+        const d1 = el("div"), d2 = el("div");
+        bars(d1, dir, DIRECTIONS, ph); box.append(el("div", { class: "meta" }, "Direction"), d1);
+        bars(d2, cred, [1,2,3,4,5], ph); box.append(el("div", { class: "meta" }, "Credibility"), d2);
+      }
+      grid.append(box);
+    }
+    out.append(el("h3", {}, "Ratings"), grid);
+    const st = r.standards.filter(s => s.is_ballot_option);
+    if (st.length) { const d = el("div"); const counts = Object.fromEntries(st.map(s => [s.label, s.votes])); bars(d, counts, st.map(s => s.label)); out.append(el("h3", {}, "Standards vote"), d); }
+  }
+  watchSession(sess => { document.getElementById("phase").textContent = sess.show_results ? "Live class results." : "Results appear here when the instructor turns them on."; render(sess); });
+  if (!store.get().join_code) { const code = new URLSearchParams(location.search).get("code"); if (code) { store.set({ join_code: code.toUpperCase() }); location.reload(); } }
+})();
+</script>

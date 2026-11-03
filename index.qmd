@@ -1,0 +1,66 @@
+---
+title: "Join the session"
+---
+
+::: {#join-box}
+Enter the session code shown on the screen and pick your group. No name or email is collected. Your responses are tied to a random token stored in this browser only.
+
+<form id="join-form" onsubmit="return false;">
+<label>Session code<br><input type="text" id="join-code" autocomplete="off" autocapitalize="characters" required></label>
+<label style="display:block;margin-top:.75rem">Group<br>
+<select id="group" style="padding:.5rem;font-size:1rem"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<p style="margin-top:1rem"><button class="primary" id="join-btn">Join</button></p>
+<div class="status" id="join-status"></div>
+</form>
+:::
+
+::: {#joined style="display:none"}
+<div class="phase-banner live" id="phase"></div>
+
+### Poll 1: What counts as education technology?
+<div id="define-box">
+<textarea id="definition" rows="3" maxlength="400" placeholder="One sentence."></textarea>
+<p><button class="primary" id="define-btn">Submit definition</button></p>
+<div class="status" id="define-status"></div>
+</div>
+
+<p style="margin-top:1.5rem">Next: <a href="studies.html">read your studies</a>, then <a href="evaluate.html">rate them</a>.</p>
+<p class="meta"><a href="#" id="leave">Leave session</a></p>
+:::
+
+<script>
+(function () {
+  const { rpc, store, status, watchSession, PHASE_TEXT } = Lab;
+  const s = store.get();
+  const q = new URLSearchParams(location.search);
+  if (q.get("code")) document.getElementById("join-code").value = q.get("code");
+
+  function showJoined() {
+    document.getElementById("join-box").style.display = "none";
+    document.getElementById("joined").style.display = "";
+    watchSession(sess => {
+      document.getElementById("phase").textContent = `Group ${store.get().group_code}. ${PHASE_TEXT[sess.phase]}`;
+      document.getElementById("define-box").style.display = ["lobby","defining"].includes(sess.phase) ? "" : "none";
+    });
+  }
+  if (s.token) showJoined();
+
+  document.getElementById("join-btn").onclick = async () => {
+    const code = document.getElementById("join-code").value.trim();
+    const group = document.getElementById("group").value;
+    try {
+      const r = await rpc("join_session", { p_join_code: code, p_group: group });
+      store.set({ token: r.token, participant_id: r.participant_id, group_code: r.group_code, join_code: code.toUpperCase() });
+      showJoined();
+    } catch (e) { status(document.getElementById("join-status"), e.message, false); }
+  };
+  document.getElementById("define-btn").onclick = async () => {
+    const st = document.getElementById("define-status");
+    try {
+      await rpc("submit_definition", { p_token: store.get().token, p_text: document.getElementById("definition").value });
+      status(st, "Submitted. You can edit and resubmit until the poll closes.", true);
+    } catch (e) { status(st, e.message, false); }
+  };
+  document.getElementById("leave").onclick = (ev) => { ev.preventDefault(); store.clear(); location.reload(); };
+})();
+</script>

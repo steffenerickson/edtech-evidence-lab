@@ -1,0 +1,8 @@
+/.quarto/
+/_site/
+content/study_reveals.yml
+.env
+__pycache__/
+*.tmp.pptx
+~$*
+.DS_Store

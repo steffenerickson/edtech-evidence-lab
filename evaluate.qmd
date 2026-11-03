@@ -1,0 +1,54 @@
+---
+title: "Rate the evidence"
+---
+
+<div class="phase-banner" id="phase">Join a session first.</div>
+<div id="forms"></div>
+
+<script>
+(async function () {
+  const { rpc, store, el, status, watchSession, DIRECTIONS } = Lab;
+  const cards = await (await fetch("js/cards.json")).json();
+  const root = document.getElementById("forms");
+  let phase = null, mine = [], existing = {};
+
+  function form(c, which) {
+    const prev = existing[`${c.id}:${which}`] || {};
+    const f = el("form", { class: "card" + (which === "post" ? " post" : ""), onsubmit: e => e.preventDefault() });
+    f.append(el("h3", {}, `Study ${c.label}: ${c.public_title}`), el("div", { class: "meta" }, which === "post" ? "Post-reveal rating" : "Pre-reveal rating"));
+    f.append(el("p", {}, el("a", { href: `studies.html#${c.id}` }, "Read the study")));
+    const dir = el("div", { class: "choice-group" }, ...DIRECTIONS.map(d => el("label", {}, el("input", { type: "radio", name: "dir", value: d, ...(prev.direction === d ? { checked: "" } : {}) }), el("span", {}, d))));
+    const cred = el("div", { class: "choice-group" }, ...[1,2,3,4,5].map(n => el("label", {}, el("input", { type: "radio", name: "cred", value: n, required: "", ...(prev.credibility === n ? { checked: "" } : {}) }), el("span", {}, `${n}${n===1?" low":n===5?" high":""}`))));
+    const reason = el("textarea", { rows: 2, maxlength: 600, placeholder: "One sentence: why this rating?" }); reason.value = prev.reason || "";
+    const st = el("div", { class: "status" });
+    f.append(el("div", { class: "rating-row" }, el("strong", {}, "Direction of findings"), dir, el("strong", {}, "Credibility"), cred, el("strong", {}, "Reason (optional)"), reason),
+      el("button", { class: "primary", onclick: async () => {
+        const d = f.querySelector("input[name=dir]:checked"), cr = f.querySelector("input[name=cred]:checked");
+        if (!cr) return status(st, "Pick a credibility rating.", false);
+        try {
+          await rpc("submit_rating", { p_token: store.get().token, p_study: c.id, p_phase: which, p_direction: d ? d.value : null, p_credibility: +cr.value, p_reason: reason.value });
+          status(st, prev.credibility ? "Updated." : "Submitted.", true); existing[`${c.id}:${which}`] = { direction: d && d.value, credibility: +cr.value, reason: reason.value };
+        } catch (e) { status(st, e.message, false); }
+      } }, prev.credibility ? "Update rating" : "Submit rating"), st);
+    return f;
+  }
+
+  async function render() {
+    root.replaceChildren();
+    if (!store.get().token) return;
+    try { const r = await rpc("my_ratings", { p_token: store.get().token }); existing = Object.fromEntries(r.map(x => [`${x.study_id}:${x.phase}`, x])); } catch {}
+    const studies = cards.filter(c => mine.includes(c.id));
+    if (["reading", "rating_pre"].includes(phase)) studies.forEach(c => root.append(form(c, "pre")));
+    else if (phase === "rating_post") studies.forEach(c => root.append(form(c, "post")));
+    else if (phase === "locked" || phase === "revealed") root.append(el("p", {}, "Your pre-reveal ratings are locked. ", el("a", { href: "studies.html" }, "Go to the studies page"), " to see the sources when they are revealed."));
+    else if (["standards_submit","standards_sort","standards_vote","final"].includes(phase)) root.append(el("p", {}, "Rating is finished. Continue to ", el("a", { href: "standards.html" }, "standards"), "."));
+    if (studies.length === 0 && ["reading","rating_pre","rating_post"].includes(phase)) root.append(el("p", {}, "No studies are assigned to your group yet. Ask the instructor."));
+  }
+
+  watchSession(sess => {
+    phase = sess.phase; mine = (sess.groups && sess.groups[store.get().group_code]) || [];
+    document.getElementById("phase").textContent = Lab.PHASE_TEXT[phase];
+    render();
+  });
+})();
+</script>

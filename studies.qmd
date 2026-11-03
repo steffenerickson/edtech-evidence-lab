@@ -1,0 +1,50 @@
+---
+title: "Studies"
+---
+
+<div class="phase-banner" id="phase">Join a session to see which studies are yours. All studies are readable.</div>
+<p><label><input type="checkbox" id="mine-only"> Show only my group's studies</label></p>
+<div id="cards"></div>
+
+<script>
+(async function () {
+  const { rpc, store, el, watchSession } = Lab;
+  const cards = await (await fetch("js/cards.json")).json();
+  let mine = [], reveals = {};
+  const root = document.getElementById("cards");
+
+  function render() {
+    const onlyMine = document.getElementById("mine-only").checked;
+    root.replaceChildren(...cards.filter(c => !onlyMine || mine.includes(c.id)).map(c => {
+      const card = el("article", { class: "card" + (mine.includes(c.id) ? " mine" : ""), id: c.id });
+      card.append(el("h3", {}, `Study ${c.label}: ${c.public_title}`, mine.includes(c.id) ? el("span", { class: "badge", style: "margin-left:.5rem" }, "your group") : null));
+      card.append(el("div", { class: "meta" }, c.kind));
+      card.append(el("div", { html: c.card_html }));
+      if (c.figure) card.append(el("figure", {}, el("img", { src: c.figure.path, alt: c.figure.alt || "" }), el("figcaption", { class: "meta" }, c.figure.caption || "")));
+      const r = reveals[c.id];
+      if (r) {
+        const dl = el("dl", {});
+        for (const [k, v] of [["Citation", r.citation], ["Authors", r.authors], ["Affiliations", r.affiliations], ["Funding", r.funding], ["Relationship to the technology", r.relationships], ["Disclosure, in the document's words", r.disclosure_quote]])
+          if (v) dl.append(el("dt", {}, k), el("dd", {}, v));
+        if (r.url) dl.append(el("dt", {}, "Link"), el("dd", {}, el("a", { href: r.url, target: "_blank" }, r.url)));
+        card.append(el("div", { class: "reveal" }, el("strong", {}, "Revealed source"), dl));
+      }
+      return card;
+    }));
+  }
+  document.getElementById("mine-only").onchange = render;
+  render();
+
+  watchSession(async sess => {
+    const g = store.get().group_code;
+    mine = (sess.groups && sess.groups[g]) || [];
+    document.getElementById("mine-only").checked = mine.length > 0;
+    document.getElementById("phase").textContent = mine.length ? `Group ${g}: your studies are ${mine.map(id => (cards.find(c => c.id === id) || {}).label).join(" and ")}.` : Lab.PHASE_TEXT[sess.phase];
+    try {
+      const rv = await rpc("get_reveals", { p_join_code: sess.join_code });
+      reveals = Object.fromEntries(rv.map(r => [r.study_id, r]));
+    } catch { reveals = {}; }
+    render();
+  });
+})();
+</script>
