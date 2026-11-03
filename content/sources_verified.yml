@@ -4,7 +4,7 @@
 approved_by: Steffen Erickson
 approved_on: 2026-11-03
 sources:
-- {id: s01, short: "OECD 2015, Students, Computers and Learning", doc: "OECD PDF, 204 pp", figure: "Fig 6.5 p.153; OECD teaching-use licence with attribution", status: verified, shown_publicly: false, note: "figure shown at reveal only (labels name OECD)"}
+- {id: s01, short: "OECD 2015, Students, Computers and Learning", doc: "OECD PDF, 204 pp", figure: "none (Fig 6.5 dropped with the reveal step, 2026-11-03)", status: verified}
 - {id: s02, short: "Weatherholtz, Grimaldi & Hill 2022, Khan Academy MAP Accelerator tech report", doc: "Khan Academy PDF via khan.co/MATechReport2022, 35 pp", figure: "none embedded; no licence stated", status: verified}
 - {id: s03, short: "Dynarski et al. 2007, NCEE 2007-4005", doc: "IES PDF, 105 pp", figure: "Fig 1 p.xx; public domain", status: verified}
 - {id: s04, short: "Doss et al. 2025, RAND RR-A4180-1", doc: "RAND PDF", figure: "none embedded; RAND noncommercial terms, link only", status: verified}
@@ -15,4 +15,6 @@ sources:
 - {id: s09, short: "Madigan et al. 2019 JAMA Pediatrics", doc: "PMC full text + correction notice", figure: "none; AMA copyright", status: verified, note: "corrected coefficients used"}
 # removed from lesson 2026-11-03 at instructor request
 # - {id: s10, short: "Erickson, Wong & Dray, chapter 1 short v3", doc: "local manuscript", figure: "Figure 5 (RD plots, reading), title cropped; author's own", status: verified}
-- {id: n01, short: "Coughlan, BBC News, 15 Sep 2015", doc: "live BBC page", figure: "none", status: verified}
+# replaced 2026-11-03 at instructor request (needed a 2025-26 article unrelated to the nine studies)
+# - {id: n01, short: "Coughlan, BBC News, 15 Sep 2015", doc: "live BBC page", figure: "none", status: verified}
+- {id: n01, short: "Chow, TIME, 17 Jun 2025, ChatGPT May Be Eroding Critical Thinking Skills", doc: "live TIME page (updated 13 Nov 2025; correction 23 Jun 2025)", figure: "none", status: verified, note: "quotes checked against the article body 2026-11-03; reports the Kosmyna et al. MIT Media Lab preprint"}

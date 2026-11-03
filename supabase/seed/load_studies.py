@@ -1,6 +1,6 @@
-"""Load content/study_reveals.yml (git-ignored) and studies_public.yml titles into Supabase.
+"""Load study ids and titles from content/studies_public.yml into the Supabase studies table.
 
-Run locally only:  SUPABASE_SERVICE_KEY=... python3 supabase/seed/load_reveals.py
+Run locally only:  SUPABASE_SERVICE_KEY=... python3 supabase/seed/load_studies.py
 The service-role key never leaves this machine.
 """
 import json, os, pathlib, sys, urllib.request
@@ -19,5 +19,3 @@ def upsert(table, rows, conflict):
 
 pub = yaml.safe_load((ROOT / "content/studies_public.yml").read_text())["studies"]
 upsert("studies", [{"id": s["id"], "display_order": s["display_order"], "public_title": s["public_title"]} for s in pub], "id")
-rev = yaml.safe_load((ROOT / "content/study_reveals.yml").read_text())["reveals"]
-upsert("study_reveals", rev, "study_id")

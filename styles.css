@@ -26,8 +26,6 @@ button:disabled { opacity: .5; }
 .bar .fill.post { background: #e08a1e; }
 .bar .n { width: 2rem; text-align: right; }
 .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-.reveal { background: #fbf8ef; border-left: 4px solid #e08a1e; padding: .75rem 1rem; margin-top: .75rem; }
-.reveal dt { font-weight: 600; margin-top: .4rem; } .reveal dd { margin-left: 0; }
 .big-list li { font-size: 1.25rem; margin: .6rem 0; }
 .dash section { border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1.5rem; }
 .dash .phase-buttons { display: flex; flex-wrap: wrap; gap: .4rem; }
