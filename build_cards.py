@@ -5,6 +5,8 @@ loaded into Supabase separately by supabase/seed/load_reveals.py.
 """
 import json, pathlib, re, subprocess, sys
 import yaml
+import shutil
+PANDOC = ["pandoc"] if shutil.which("pandoc") else ["quarto", "pandoc"]
 
 ROOT = pathlib.Path(__file__).parent
 src = ROOT / "content" / "studies_public.yml"
@@ -20,7 +22,7 @@ if banned.exists():
         sys.exit(f"build_cards: identifying terms found in public content: {hits}")
 
 for s_ in studies:
-    s_["card_html"] = subprocess.run(["pandoc", "-f", "markdown", "-t", "html"], input=s_["card"],
+    s_["card_html"] = subprocess.run(PANDOC + ["-f", "markdown", "-t", "html"], input=s_["card"],
                                      capture_output=True, text=True, check=True).stdout
 (ROOT / "js" / "cards.json").write_text(json.dumps(studies, ensure_ascii=False, indent=1), encoding="utf-8")
 
