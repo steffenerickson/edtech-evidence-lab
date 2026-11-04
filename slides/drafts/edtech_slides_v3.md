@@ -150,16 +150,8 @@ On the Standards page, choose up to five of the standards the class proposed.
 
 ::: notes
 Phase: standards_vote. Four minutes. Every submission is on the ballot, shown in random order on each phone. The database rejects more than five selections. Resubmitting replaces the earlier ballot.
-:::
 
-# Our Five Standards
-
-[Live: the five standards with the most votes, ranked 1 to 5]
-
-::: notes
-Phase: final. The Standards page and the dashboard rank submissions by votes; the top five are the result. Ties are broken by whichever was submitted first, so if two are tied at the cutoff, say so and let the class see both.
-
-For each standard, one sentence on why it matters, using a study from today as the example. Then two questions: what did we leave out, and how would a district use these five when a vendor presents a study?
+Then phase: final. Project the Results page or the Standards page, which rank submissions by votes; the top five are the result. Ties are broken by whichever was submitted first, so if two are tied at the cutoff, say so and let the class see both. For each standard, one sentence on why it matters, using a study from today as the example. Then two questions: what did we leave out, and how would a district use these five when a vendor presents a study?
 
 End on the five; the two source slides after this are reference only. Afterwards set the phase to closed, export the CSV if you want it, and delete the session within 30 days.
 :::

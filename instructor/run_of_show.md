@@ -15,7 +15,7 @@ Slide numbers refer to `slides/output/edtech_slides_v3.pptx`.
 | 0:36 | **locked** | 8 | **Lock first.** Then walk through the key ideas the studies should have raised, tying each to what a group said. Show the dashboard or Results page as needed. |
 | 0:50 | **standards_submit** | 9 | Up to three standards each, 4 min. Watch the count on the dashboard; delete duplicates or anything unfit for the screen. |
 | 0:54 | **standards_vote** | 10 | Every submission is on the ballot, in random order per phone. Vote for up to five, 4 min. |
-| 0:58 | **final** | 11 | The Standards page and dashboard show the five with the most votes, ranked. Ties are broken by earlier submission; mention it if it matters. Discuss. |
-| 1:10 | closed | 12–13 | End. Export CSV if wanted. Delete the session within 30 days. |
+| 0:58 | **final** | Results page | The Standards page and dashboard show the five with the most votes, ranked. Ties are broken by earlier submission; mention it if it matters. Discuss. |
+| 1:10 | closed | 11–12 | End. Export CSV if wanted. Delete the session within 30 days. |
 
 Fallbacks: if the database fails, hand out the packet, collect paper ballots, and tally by show of hands.
