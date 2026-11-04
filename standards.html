@@ -163,14 +163,17 @@ ul.task-list li input[type="checkbox"] {
 Join a session first.
 </div>
 <div id="submit-box" style="display:none">
-<section id="propose-one-standard" class="level3">
-<h3 class="anchored" data-anchor-id="propose-one-standard">Propose one standard</h3>
-A standard is a rule the class would use to judge whether a study, or a body of studies, is credible evidence that an education technology changed student learning. One sentence.
+<section id="propose-up-to-three-standards" class="level3">
+<h3 class="anchored" data-anchor-id="propose-up-to-three-standards">Propose up to three standards</h3>
+A standard is a rule the class would use to judge whether a study, or a body of studies, is credible evidence that an education technology changed student learning. One sentence each.
+<ul id="mine" class="big-list">
+</ul>
 <textarea id="std-text" rows="3" maxlength="400"></textarea>
 <p>
 <button class="primary" id="std-btn">
 Submit
 </button>
+<span id="std-count" class="meta"></span>
 </p>
 <div id="std-status" class="status">
 
@@ -180,6 +183,7 @@ Submit
 <div id="vote-box" style="display:none">
 <section id="vote-for-up-to-five" class="level3">
 <h3 class="anchored" data-anchor-id="vote-for-up-to-five">Vote for up to five</h3>
+Every standard the class proposed is listed, in random order.
 <div id="ballot">
 
 </div>
@@ -205,14 +209,28 @@ Cast votes
 (function () {
   const { rpc, store, el, status, watchSession } = Lab;
   let ballot = [];
+
+  async function loadMine() {
+    let mine = []; try { mine = await rpc("my_standards", { p_token: store.get().token }); } catch {}
+    document.getElementById("mine").replaceChildren(...mine.map(m => el("li", {}, m.text, " ",
+      el("button", { class: "secondary", style: "min-height:28px;margin-left:.5rem", onclick: async () => {
+        try { await rpc("delete_standard", { p_token: store.get().token, p_submission: m.id }); loadMine(); }
+        catch (e) { status(document.getElementById("std-status"), e.message, false); } } }, "remove"))));
+    const left = 3 - mine.length;
+    document.getElementById("std-count").textContent = left > 0 ? `${left} of 3 remaining` : "You have proposed three standards.";
+    document.getElementById("std-btn").disabled = left <= 0;
+    document.getElementById("std-text").disabled = left <= 0;
+  }
   document.getElementById("std-btn").onclick = async () => {
-    const st = document.getElementById("std-status");
-    try { await rpc("submit_standard", { p_token: store.get().token, p_text: document.getElementById("std-text").value }); status(st, "Submitted. You can edit until submissions close.", true); }
+    const st = document.getElementById("std-status"), ta = document.getElementById("std-text");
+    try { await rpc("submit_standard", { p_token: store.get().token, p_text: ta.value }); ta.value = ""; status(st, "Submitted.", true); loadMine(); }
     catch (e) { status(st, e.message, false); }
   };
+
   function renderBallot(chosen) {
     const box = document.getElementById("ballot");
-    box.replaceChildren(el("div", { class: "choice-group", style: "flex-direction:column" }, ...ballot.map(b => el("label", {}, el("input", { type: "checkbox", value: b.id, ...(chosen.includes(b.id) ? { checked: "" } : {}), onchange: count }), el("span", {}, b.label, b.scope ? el("span", { class: "badge", style: "margin-left:.5rem" }, b.scope === "study" ? "single study" : "evidence base") : null)))));
+    box.replaceChildren(el("div", { class: "choice-group", style: "flex-direction:column" }, ...ballot.map(b => el("label", {},
+      el("input", { type: "checkbox", value: b.id, ...(chosen.includes(b.id) ? { checked: "" } : {}), onchange: count }), el("span", {}, b.text)))));
     count();
   }
   function count() {
@@ -223,23 +241,27 @@ Cast votes
   document.getElementById("vote-btn").onclick = async () => {
     const ids = [...document.querySelectorAll("#ballot input:checked")].map(i => +i.value);
     const st = document.getElementById("vote-status");
-    try { await rpc("cast_votes", { p_token: store.get().token, p_standard_ids: ids }); status(st, `Recorded ${ids.length} vote${ids.length===1?"":"s"}. Resubmitting replaces them.`, true); }
+    try { await rpc("cast_votes", { p_token: store.get().token, p_submission_ids: ids }); status(st, `Recorded ${ids.length} vote${ids.length===1?"":"s"}. Resubmitting replaces them.`, true); }
     catch (e) { status(st, e.message, false); }
   };
+
+  let lastPhase = null;
   watchSession(async sess => {
     document.getElementById("phase").textContent = Lab.PHASE_TEXT[sess.phase];
     document.getElementById("submit-box").style.display = sess.phase === "standards_submit" ? "" : "none";
     document.getElementById("vote-box").style.display = sess.phase === "standards_vote" ? "" : "none";
     document.getElementById("final-box").style.display = sess.phase === "final" ? "" : "none";
-    if (sess.phase === "standards_vote") {
+    if (sess.phase === "standards_submit" && lastPhase !== sess.phase) loadMine();
+    if (sess.phase === "standards_vote" && lastPhase !== sess.phase) {
       ballot = await rpc("get_ballot", { p_join_code: sess.join_code });
       let chosen = []; try { chosen = await rpc("my_votes", { p_token: store.get().token }); } catch {}
       renderBallot(chosen);
     }
     if (sess.phase === "final") {
       const f = await rpc("get_final", { p_join_code: sess.join_code });
-      document.getElementById("final").replaceChildren(...f.map(x => el("li", {}, x.label)));
+      document.getElementById("final").replaceChildren(...f.map(x => el("li", {}, x.text, " ", el("span", { class: "meta" }, `(${x.votes} vote${x.votes === 1 ? "" : "s"})`))));
     }
+    lastPhase = sess.phase;
   });
 })();
 </script>

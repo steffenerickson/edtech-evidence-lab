@@ -217,10 +217,10 @@ Default A–E
 
 </div>
 <p style="margin-top:.75rem">
-<label><input type="checkbox" id="show-results"> Students can see aggregate results</label> <label style="margin-left:1rem"><input type="checkbox" id="show-reasons"> Show written reasons below</label>
+<label><input type="checkbox" id="show-reasons"> Show written reasons below</label>
 </p>
 <p class="meta">
-Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → standards_submit → standards_sort → standards_vote → final. Lock before showing results.
+Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → standards_submit → standards_vote → final. Lock before showing results.
 </p>
 </section>
 <section>
@@ -269,6 +269,9 @@ voters
 </div>
 </div>
 </div>
+<p class="meta">
+The <a href="results.html">Results page</a> shows definitions, ratings, and the standards tally live, as responses arrive.
+</p>
 </section>
 <section>
 </section>
@@ -287,23 +290,13 @@ voters
 </section>
 <section>
 </section>
-<section id="standards-submissions-and-ballot" class="level3">
-<h3 class="anchored" data-anchor-id="standards-submissions-and-ballot">Standards: submissions and ballot</h3>
+<section id="standards" class="level3">
+<h3 class="anchored" data-anchor-id="standards">Standards</h3>
 <p class="meta">
-Create ballot options, then assign each submission to one. Mark scope. Toggle “on ballot”. After voting, mark the five winners (ties: resolve by voice vote, then mark).
+Every submission is a ballot option; students may propose up to three each and vote for up to five. The list is ordered by votes, and the top five are what the final slide shows. Delete a submission only to remove a duplicate or something unfit for the screen.
 </p>
-<div id="standards-editor">
-
-</div>
-<p>
-<input type="text" id="new-standard" placeholder="New ballot option label" style="max-width:28rem"> <button class="secondary" id="add-standard">Add</button>
-</p>
-<h4 class="anchored">
-Submissions
-</h4>
-<div id="submissions">
-
-</div>
+<ol id="submissions" class="big-list">
+</ol>
 </section>
 <section>
 </section>
@@ -328,7 +321,7 @@ Download aggregate CSV
 (async function () {
   const { sb, rpc, el, status, bars, DIRECTIONS } = Lab;
   const cards = await (await fetch("js/cards.json")).json();
-  const PHASES = ["lobby","defining","reading","rating_pre","locked","standards_submit","standards_sort","standards_vote","final","closed"];
+  const PHASES = ["lobby","defining","reading","rating_pre","locked","standards_submit","standards_vote","final","closed"];
   let session = null, timer = null;
 
   async function q(table, filters = {}) {
@@ -352,7 +345,6 @@ Download aggregate CSV
     document.getElementById("who").textContent = user.email;
     await listSessions();
     document.getElementById("phase-buttons").replaceChildren(...PHASES.map(p => el("button", { class: "secondary", "data-phase": p, onclick: () => setPhase(p) }, p)));
-    document.getElementById("show-results").onchange = e => patchSession({ show_results: e.target.checked });
     document.getElementById("show-reasons").onchange = e => patchSession({ show_reasons: e.target.checked });
     if (timer) clearInterval(timer); timer = setInterval(refresh, window.EDTECH_CONFIG.pollMs);
   }
@@ -384,12 +376,12 @@ Download aggregate CSV
     if (error) return alert(error.message); session = data; paintPhase();
   }
   function setPhase(p) {
-    if (p === "standards_submit" && !["locked","standards_sort","standards_vote","final"].includes(session.phase) && !confirm("Ratings are not locked. Move on anyway?")) return;
+    if (p === "standards_submit" && !["locked","standards_vote","final"].includes(session.phase) && !confirm("Ratings are not locked. Move on anyway?")) return;
     patchSession({ phase: p });
   }
   function paintPhase() {
     document.querySelectorAll("#phase-buttons button").forEach(b => b.classList.toggle("current", b.dataset.phase === session.phase));
-    document.getElementById("show-results").checked = session.show_results; document.getElementById("show-reasons").checked = session.show_reasons;
+    document.getElementById("show-reasons").checked = session.show_reasons;
   }
 
   // ---- groups
@@ -414,9 +406,9 @@ Download aggregate CSV
   async function refresh() {
     if (!session) return;
     const [sess] = await q("sessions", { id: session.id }); if (sess) { session = sess; paintPhase(); }
-    const [parts, defs, ratings, subs, votes, stds] = await Promise.all([
+    const [parts, defs, ratings, subs, votes] = await Promise.all([
       q("participants", { session_id: session.id }), q("definitions", { session_id: session.id }), q("ratings", { session_id: session.id }),
-      q("standard_submissions", { session_id: session.id }), q("standard_votes", { session_id: session.id }), q("standards", { session_id: session.id })]);
+      q("standard_submissions", { session_id: session.id }), q("standard_votes", { session_id: session.id })]);
     document.getElementById("n-participants").textContent = parts.length;
     document.getElementById("n-definitions").textContent = defs.length;
     document.getElementById("n-pre").textContent = ratings.filter(r => r.phase === "pre").length;
@@ -424,7 +416,7 @@ Download aggregate CSV
     document.getElementById("n-votes").textContent = new Set(votes.map(v => v.participant_id)).size;
     document.getElementById("definitions").replaceChildren(...defs.map(d => el("li", {}, d.text)));
     paintRatings(ratings, parts);
-    paintStandards(stds, subs, votes);
+    paintStandards(subs, votes);
   }
   function paintRatings(ratings, parts) {
     const grid = document.getElementById("ratings"); grid.replaceChildren();
@@ -443,31 +435,17 @@ Download aggregate CSV
     }
   }
 
-  // ---- standards editor
-  function paintStandards(stds, subs, votes) {
-    const ed = document.getElementById("standards-editor");
-    stds.sort((a, b) => a.sort_order - b.sort_order || a.id - b.id);
-    ed.replaceChildren(...stds.map(s => { const n = votes.filter(v => v.standard_id === s.id).length;
-      const row = el("div", { class: "bar", style: "gap:.6rem;flex-wrap:wrap" },
-        el("input", { type: "text", value: s.label, style: "max-width:26rem", onchange: e => upd(s.id, { label: e.target.value }) }),
-        el("select", { onchange: e => upd(s.id, { scope: e.target.value || null }) }, el("option", { value: "" }, "scope?"), el("option", { value: "study", ...(s.scope === "study" ? { selected: "" } : {}) }, "single study"), el("option", { value: "evidence_base", ...(s.scope === "evidence_base" ? { selected: "" } : {}) }, "evidence base")),
-        el("label", {}, el("input", { type: "checkbox", ...(s.is_ballot_option ? { checked: "" } : {}), onchange: e => upd(s.id, { is_ballot_option: e.target.checked }) }), " on ballot"),
-        el("label", {}, el("input", { type: "checkbox", ...(s.is_winner ? { checked: "" } : {}), onchange: e => upd(s.id, { is_winner: e.target.checked }) }), " winner"),
-        el("span", { class: "n", style: "width:auto" }, `${n} vote${n === 1 ? "" : "s"}`),
-        el("button", { class: "secondary", style: "min-height:32px", onclick: async () => { await sb.from("standards").delete().eq("id", s.id); refresh(); } }, "×"));
-      return row; }));
-    document.getElementById("submissions").replaceChildren(...subs.map(sub => el("div", { class: "bar", style: "gap:.6rem" }, el("span", { style: "flex:1" }, sub.text),
-      el("select", { onchange: e => sb.from("standard_submissions").update({ canonical_standard_id: e.target.value ? +e.target.value : null }).eq("id", sub.id).then(refresh) },
-        el("option", { value: "" }, "unassigned"), ...stds.map(s => el("option", { value: s.id, ...(sub.canonical_standard_id === s.id ? { selected: "" } : {}) }, s.label.slice(0, 50)))),
-      el("button", { class: "secondary", style: "min-height:32px", onclick: () => addStandard(sub.text, sub.id) }, "→ new option"))));
+  // ---- standards: submissions ranked by votes
+  function paintStandards(subs, votes) {
+    const n = Object.fromEntries(subs.map(sub => [sub.id, votes.filter(v => v.submission_id === sub.id).length]));
+    subs.sort((a, b) => n[b.id] - n[a.id] || a.created_at.localeCompare(b.created_at) || a.id - b.id);
+    document.getElementById("submissions").replaceChildren(...subs.map((sub, i) => el("li", { style: i < 5 && n[sub.id] > 0 ? "font-weight:600" : "" },
+      el("span", { style: "flex:1" }, sub.text), " ",
+      el("span", { class: "n", style: "width:auto" }, `${n[sub.id]} vote${n[sub.id] === 1 ? "" : "s"}`), " ",
+      el("button", { class: "secondary", style: "min-height:32px", onclick: async () => {
+        if (!confirm("Delete this submission? Any votes for it are removed too.")) return;
+        const { error } = await sb.from("standard_submissions").delete().eq("id", sub.id); if (error) alert(error.message); refresh(); } }, "×"))));
   }
-  async function upd(id, patch) { const { error } = await sb.from("standards").update(patch).eq("id", id); if (error) alert(error.message); }
-  async function addStandard(label, subId) {
-    const { data, error } = await sb.from("standards").insert({ session_id: session.id, label }).select().single(); if (error) return alert(error.message);
-    if (subId) await sb.from("standard_submissions").update({ canonical_standard_id: data.id }).eq("id", subId);
-    refresh();
-  }
-  document.getElementById("add-standard").onclick = () => { const v = document.getElementById("new-standard").value.trim(); if (v) { addStandard(v); document.getElementById("new-standard").value = ""; } };
 
   // ---- export / purge
   document.getElementById("export-csv").onclick = async () => {

@@ -160,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div id="phase" class="phase-banner">
-Results appear here when the instructor turns them on.
+Live class results. This page updates on its own as responses come in.
 </div>
 <div id="out">
 
@@ -207,40 +207,54 @@ Results appear here when the instructor turns them on.
     s.append(el("h3", {}, "Mean credibility, highest first"), ov, el("div", { class: "meta" }, "Upper bar: mean credibility out of 5. Lower bar: what readers said the study found."), legend);
     // Detail: credibility distribution per study
     const grid = el("div", { class: "results-grid" });
-    stats.forEach(st => { const box = el("div", { class: "card" }, el("h4", {}, `Source ${st.c.label}`), el("div", { class: "meta" }, st.c.public_title)); const d = el("div"); bars(d, st.cred, [5,4,3,2,1]); box.append(d); grid.append(box); });
-    const det = el("details", {}, el("summary", {}, "Credibility distribution for each study"), grid);
+    stats.forEach(st => {
+      const box = el("div", { class: "card" }, el("h4", {}, `Source ${st.c.label}`), el("div", { class: "meta" }, st.c.public_title),
+        el("strong", {}, `n=${st.n}, mean credibility ${st.mean.toFixed(2)}`));
+      const d1 = el("div"), d2 = el("div");
+      box.append(el("div", { class: "meta" }, "Direction of findings"), d1, el("div", { class: "meta" }, "Credibility"), d2);
+      bars(d1, st.dir, DIRECTIONS, "pre"); bars(d2, st.cred, [5,4,3,2,1], "pre");
+      grid.append(box);
+    });
+    const det = el("details", {}, el("summary", {}, "Direction and credibility for each study"), grid);
     s.append(det);
     return s;
   }
 
   function standards(r) {
-    const st = r.standards.filter(x => x.is_ballot_option);
+    const st = r.standards;
     if (!st.length) return null;
     const total = st.reduce((a, x) => a + x.votes, 0);
-    const winners = st.filter(x => x.is_winner);
-    const s = section("3. Evidence standards", total ? `${total} votes cast, up to five per person` : "Ballot options, voting not yet open");
+    const ranked = [...st].sort((a, b) => b.votes - a.votes || a.id - b.id);
+    const isFinal = ["final", "closed"].includes(r.phase);
+    const winners = isFinal ? ranked.filter(x => x.votes > 0).slice(0, 5) : [];
+    const s = section("3. Evidence standards", total ? `${total} votes cast, up to five per person` : "Proposed standards, voting not yet open");
     const list = el("ol", { class: "standards-tally" });
     const max = Math.max(1, ...st.map(x => x.votes));
-    [...st].sort((a, b) => b.votes - a.votes || a.sort_order - b.sort_order).forEach(x => {
-      list.append(el("li", { class: x.is_winner ? "winner" : "" },
-        el("div", { class: "st-text" }, x.is_winner ? el("span", { class: "check" }, "✓ ") : "", x.label, x.scope ? el("span", { class: "meta" }, ` (${x.scope})`) : ""),
+    ranked.forEach(x => {
+      const win = winners.includes(x);
+      list.append(el("li", { class: win ? "winner" : "" },
+        el("div", { class: "st-text" }, win ? el("span", { class: "check" }, "✓ ") : "", x.text),
         el("div", { class: "ov-bar" }, el("div", { class: "track" }, el("div", { class: "ov-fill", style: `width:${(100 * x.votes / max).toFixed(0)}%` })), el("span", { class: "ov-n" }, `${x.votes} vote${x.votes === 1 ? "" : "s"}`))));
     });
     s.append(list);
-    if (winners.length) { const w = el("div", { class: "card winners" }, el("h3", {}, "Our five standards"), el("ol", { class: "big-list" }, ...winners.sort((a, b) => a.sort_order - b.sort_order).map(x => el("li", {}, x.label)))); s.prepend(w); }
+    if (winners.length) { const w = el("div", { class: "card winners" }, el("h3", {}, "Our five standards"), el("ol", { class: "big-list" }, ...winners.map(x => el("li", {}, x.text)))); s.prepend(w); }
     return s;
   }
 
-  async function render(sess) {
-    out.replaceChildren();
-    if (!sess.show_results) return;
-    const r = await rpc("get_results", { p_join_code: sess.join_code });
+  let phase = null, lastSig = "";
+  async function render() {
+    const code = store.get().join_code; if (!code) return;
+    let r; try { r = await rpc("get_results", { p_join_code: code }); } catch { return; }
     if (!r) return;
+    r.phase = phase;
+    const sig = JSON.stringify(r); if (sig === lastSig) return; lastSig = sig;
+    out.replaceChildren();
     const parts = [definitions(r), ratings(r), standards(r)].filter(Boolean);
     if (!parts.length) out.append(el("p", { class: "meta" }, "Nothing to show yet."));
     out.append(...parts);
   }
-  watchSession(sess => { document.getElementById("phase").textContent = sess.show_results ? "Live class results. This page updates on its own." : "Results appear here when the instructor turns them on."; render(sess); });
+  watchSession(sess => { phase = sess.phase; lastSig = ""; render(); });
+  setInterval(render, window.EDTECH_CONFIG.pollMs);
   if (!store.get().join_code) { const code = new URLSearchParams(location.search).get("code"); if (code) { store.set({ join_code: code.toUpperCase() }); location.reload(); } }
 })();
 </script>

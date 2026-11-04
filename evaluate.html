@@ -200,7 +200,7 @@ Join a session first.
     const studies = cards.filter(c => mine.includes(c.id));
     if (["reading", "rating_pre"].includes(phase)) studies.forEach(c => root.append(form(c, "pre")));
     else if (phase === "locked") root.append(el("p", {}, "Your ratings are locked. Watch the screen."));
-    else if (["standards_submit","standards_sort","standards_vote","final"].includes(phase)) root.append(el("p", {}, "Rating is finished. Continue to ", el("a", { href: "standards.html" }, "standards"), "."));
+    else if (["standards_submit","standards_vote","final"].includes(phase)) root.append(el("p", {}, "Rating is finished. Continue to ", el("a", { href: "standards.html" }, "standards"), "."));
     if (studies.length === 0 && ["reading","rating_pre"].includes(phase)) root.append(el("p", {}, "No sources are assigned to your group yet. Ask the instructor."));
   }
 

@@ -11,7 +11,7 @@
     "href": "results.html",
     "title": "Class results",
     "section": "",
-    "text": "Results appear here when the instructor turns them on."
+    "text": "Live class results. This page updates on its own as responses come in."
   },
   {
     "objectID": "index.html",
@@ -32,13 +32,13 @@
     "href": "instructor.html",
     "title": "Instructor dashboard",
     "section": "",
-    "text": "Email Password\n\n\nSign in\n\n\n\n\n\n\n\n\n\nSigned in as . Sign out\n\n\n\nSession\n\n\n\n\n Create session\n\n\nStudent link: \n\n\n\n\n\n\n\n\nGroups\n\nTwo studies per group. Default assignment fills groups A–E in order; edit and save.\n\n\n\n\n\n\nDefault A–E\n\nSave groups \n\n\n\n\n\nPhase\n\n\n\n\n Students can see aggregate results  Show written reasons below\n\n\nOrder: lobby → defining → reading → rating_pre → locked → standards_submit → standards_sort → standards_vote → final. Lock before showing results.\n\n\n\n\n\nLive counts\n\n\n\n0\n\n\njoined\n\n\n\n\n0\n\n\ndefinitions\n\n\n\n\n0\n\n\npre ratings\n\n\n\n\n0\n\n\nstandards proposed\n\n\n\n\n0\n\n\nvoters\n\n\n\n\n\n\n\nDefinitions\n\n\n\n\n\n\nRatings by study\n\n\n\n\n\n\n\nStandards: submissions and ballot\n\nCreate ballot options, then assign each submission to one. Mark scope. Toggle “on ballot”. After voting, mark the five winners (ties: resolve by voice vote, then mark).\n\n\n\n\n\n Add\n\n\nSubmissions\n\n\n\n\n\n\n\n\nExport and cleanup\n\n\nDownload aggregate CSV\n\nDelete this session and all responses Delete all my sessions\n\n\n“Delete all” includes closed sessions, which the picker above hides."
+    "text": "Email Password\n\n\nSign in\n\n\n\n\n\n\n\n\n\nSigned in as . Sign out\n\n\n\nSession\n\n\n\n\n Create session\n\n\nStudent link: \n\n\n\n\n\n\n\n\nGroups\n\nTwo studies per group. Default assignment fills groups A–E in order; edit and save.\n\n\n\n\n\n\nDefault A–E\n\nSave groups \n\n\n\n\n\nPhase\n\n\n\n\n Show written reasons below\n\n\nOrder: lobby → defining → reading → rating_pre → locked → standards_submit → standards_vote → final. Lock before showing results.\n\n\n\n\n\nLive counts\n\n\n\n0\n\n\njoined\n\n\n\n\n0\n\n\ndefinitions\n\n\n\n\n0\n\n\npre ratings\n\n\n\n\n0\n\n\nstandards proposed\n\n\n\n\n0\n\n\nvoters\n\n\n\n\nThe Results page shows definitions, ratings, and the standards tally live, as responses arrive.\n\n\n\n\n\nDefinitions\n\n\n\n\n\n\nRatings by study\n\n\n\n\n\n\n\nStandards\n\nEvery submission is a ballot option; students may propose up to three each and vote for up to five. The list is ordered by votes, and the top five are what the final slide shows. Delete a submission only to remove a duplicate or something unfit for the screen.\n\n\n\n\n\n\n\nExport and cleanup\n\n\nDownload aggregate CSV\n\nDelete this session and all responses Delete all my sessions\n\n\n“Delete all” includes closed sessions, which the picker above hides."
   },
   {
     "objectID": "standards.html",
     "href": "standards.html",
     "title": "Evidence standards",
     "section": "",
-    "text": "Join a session first.\n\n\n\nPropose one standard\nA standard is a rule the class would use to judge whether a study, or a body of studies, is credible evidence that an education technology changed student learning. One sentence.\n\n\n\nSubmit\n\n\n\n\n\n\n\n\n\nVote for up to five\n\n\n\n\n\nCast votes\n\n\n\n\n\n\n\n\n\n\nThe class’s five standards"
+    "text": "Join a session first.\n\n\n\nPropose up to three standards\nA standard is a rule the class would use to judge whether a study, or a body of studies, is credible evidence that an education technology changed student learning. One sentence each.\n\n\n\n\n\nSubmit\n\n\n\n\n\n\n\n\n\n\nVote for up to five\nEvery standard the class proposed is listed, in random order.\n\n\n\n\n\nCast votes\n\n\n\n\n\n\n\n\n\n\nThe class’s five standards"
   }
 ]
