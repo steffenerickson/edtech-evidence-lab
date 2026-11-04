@@ -23,10 +23,9 @@
     reading: "Read your group's two sources. You may start rating when ready.",
     rating_pre: "Submit your ratings now. They lock when the instructor closes this step.",
     locked: "Ratings are locked. Watch the screen.",
-    standards_submit: "Propose one standard for credible evidence.",
-    standards_sort: "The class is sorting proposed standards.",
-    standards_vote: "Vote for up to five standards.",
-    final: "Here are the five standards the class agreed on.",
+    standards_submit: "Propose up to three standards for credible evidence.",
+    standards_vote: "Vote for up to five of the standards the class proposed.",
+    final: "Here are the five standards with the most votes.",
     closed: "This session has ended.",
   };
 
