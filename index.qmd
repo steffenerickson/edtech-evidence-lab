@@ -40,7 +40,7 @@ Enter the session code shown on the screen and pick your group. No name or email
     document.getElementById("joined").style.display = "";
     watchSession(sess => {
       document.getElementById("phase").textContent = `Group ${store.get().group_code}. ${PHASE_TEXT[sess.phase]}`;
-      document.getElementById("define-box").style.display = ["lobby","defining"].includes(sess.phase) ? "" : "none";
+      document.getElementById("define-box").style.display = sess.phase === "defining" ? "" : "none";
     });
   }
   if (s.token) showJoined();

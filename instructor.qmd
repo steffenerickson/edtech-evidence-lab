@@ -33,7 +33,7 @@ title: "Instructor dashboard"
 ### Phase
 <div class="phase-buttons" id="phase-buttons"></div>
 <p style="margin-top:.75rem"><label><input type="checkbox" id="show-reasons"> Show written reasons below</label></p>
-<p class="meta">Order: lobby → defining → reading → rating_pre → <strong>locked</strong> → standards_submit → standards_vote → final. Lock before showing results.</p>
+<p class="meta">Order: defining → reading → ratings → <strong>locked</strong> → standards_submit → standards_vote → final. Lock before showing results.</p>
 </section>
 
 <section>
@@ -76,7 +76,7 @@ title: "Instructor dashboard"
 (async function () {
   const { sb, rpc, el, status, bars, DIRECTIONS } = Lab;
   const cards = await (await fetch("js/cards.json")).json();
-  const PHASES = ["lobby","defining","reading","rating_pre","locked","standards_submit","standards_vote","final","closed"];
+  const PHASES = ["defining","reading","ratings","locked","standards_submit","standards_vote","final","closed"];
   let session = null, timer = null;
 
   async function q(table, filters = {}) {

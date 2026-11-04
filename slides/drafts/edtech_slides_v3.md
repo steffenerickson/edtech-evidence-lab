@@ -3,7 +3,7 @@
 ![](../../images/qr_join.png)
 
 ::: notes
-Phase: lobby. Before class: create the session, save default groups, set phase lobby, project this slide. Check the Supabase project is awake. Print the packet as backup.
+Phase: defining. Before class: create the session, save default groups, project this slide. Definitions are open from the start, so students can answer Poll 1 as soon as they join. Check the Supabase project is awake. Print the packet as backup.
 
 This is a data-ethics class, so the question today is not only "does education technology work" but "who says so, and how should that change how much we trust the answer."
 
@@ -33,7 +33,7 @@ In one sentence, on your phone: what counts as education technology?
 Join: steffenerickson.github.io/edtech-evidence-lab · Session code on the board
 
 ::: notes
-Phase: defining. The whole join-and-define block is six minutes, so give the definition two of them. Project the Results page, where definitions appear as they are submitted, or read four or five aloud from the dashboard, choosing ones that disagree: one that includes any device, one that limits to instructional software, one that mentions AI.
+The whole join-and-define block is six minutes, so give the definition two of them. Project the Results page, where definitions appear as they are submitted, or read four or five aloud from the dashboard, choosing ones that disagree: one that includes any device, one that limits to instructional software, one that mentions AI.
 
 The point to draw out: the breadth of the definition determines which evidence counts. A study of home computers is evidence about one definition and not another.
 :::
@@ -102,7 +102,7 @@ Two minutes per group:
 - The one thing you most wanted to know and could not
 
 ::: notes
-Phase: rating_pre. Two minutes per group [8 minutes total in the 60-minute version]. Keep strict time. Write each group's "one thing you wanted to know" on the board; most will be about how the comparison group was built, whether anyone replicated it, or how long the effect lasted. Those become standards later.
+Phase: ratings. Two minutes per group [8 minutes total in the 60-minute version]. Keep strict time. Write each group's "one thing you wanted to know" on the board; most will be about how the comparison group was built, whether anyone replicated it, or how long the effect lasted. Those become standards later.
 
 Remind everyone to submit individual ratings on the Rate page before the lock.
 :::

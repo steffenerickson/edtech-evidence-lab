@@ -13,7 +13,7 @@ Classroom website and polling app for a data-ethics lesson, "Evaluating Evidence
 
 ## Setup (one time)
 
-1. Supabase: create a project; in the SQL editor run `001_schema.sql`, `002_rls.sql`, `003_functions.sql`, `004_drop_reveals.sql`, `005_purge_all.sql`, `006_simplify_standards.sql` in order. In Authentication, add a user for the instructor email listed in `instructor_emails`.
+1. Supabase: create a project; in the SQL editor run `001_schema.sql`, `002_rls.sql`, `003_functions.sql`, `004_drop_reveals.sql`, `005_purge_all.sql`, `006_simplify_standards.sql`, `007_phase_names.sql` in order. In Authentication, add a user for the instructor email listed in `instructor_emails`.
 2. `SUPABASE_SERVICE_KEY=... python3 supabase/seed/load_studies.py` from this folder (needs `pyyaml`).
 3. Push to `main`; the GitHub Action renders and publishes to the `gh-pages` branch. In repo Settings, Pages, set the source to `gh-pages`.
 4. Local preview: `quarto preview` (needs `pyyaml` and `pandoc`).
