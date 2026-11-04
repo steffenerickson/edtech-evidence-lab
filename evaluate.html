@@ -198,10 +198,10 @@ Join a session first.
     if (!store.get().token) return;
     try { const r = await rpc("my_ratings", { p_token: store.get().token }); existing = Object.fromEntries(r.map(x => [`${x.study_id}:${x.phase}`, x])); } catch {}
     const studies = cards.filter(c => mine.includes(c.id));
-    if (["reading", "rating_pre"].includes(phase)) studies.forEach(c => root.append(form(c, "pre")));
-    else if (phase === "locked") root.append(el("p", {}, "Your ratings are locked. Watch the screen."));
+    if (["reading", "ratings"].includes(phase)) studies.forEach(c => root.append(form(c, "pre")));
+    else if (phase === "locked") root.append(el("p", {}, "Your ratings are locked."));
     else if (["standards_submit","standards_vote","final"].includes(phase)) root.append(el("p", {}, "Rating is finished. Continue to ", el("a", { href: "standards.html" }, "standards"), "."));
-    if (studies.length === 0 && ["reading","rating_pre"].includes(phase)) root.append(el("p", {}, "No sources are assigned to your group yet. Ask the instructor."));
+    if (studies.length === 0 && ["reading","ratings"].includes(phase)) root.append(el("p", {}, "No sources are assigned to your group yet. Ask the instructor."));
   }
 
   watchSession(sess => {
