@@ -107,7 +107,7 @@ Phase: ratings. Two minutes per group [8 minutes total in the 60-minute version]
 Remind everyone to submit individual ratings on the Rate page before the lock.
 :::
 
-# What the Studies Should Have Raised
+# What the Studies May Have Raised
 
 - **The comparison group.** A randomized trial (C, F, G, H) can identify an effect; a dosage analysis (B) or a cross-country correlation (A) cannot, whoever wrote it.
 - **Who produced it, and why.** B was written by the platform's employees and cited on its sales page. F was funded by foundations that also fund tutoring. A conflict of interest is a reason for scrutiny, not dismissal.
@@ -116,7 +116,7 @@ Remind everyone to submit individual ratings on the Rate page before the lock.
 - **The study versus the headline.** N turns a 54-person, non-peer-reviewed preprint into "ChatGPT May Be Eroding Critical Thinking Skills." The lead author called that reading "pure clickbait."
 
 ::: notes
-Show this after the presentations, before the standards poll. Tie each point to what a group said; most of the "one thing you wanted to know" items on the board will fall under the first or fourth bullet.
+Phase: locked. Press it before showing this slide; from then on no rating can be added or changed from any phone, and the Rate page tells students so. Show this after the presentations, before the standards poll. Tie each point to what a group said; most of the "one thing you wanted to know" items on the board will fall under the first or fourth bullet.
 
 B and F: ask which concern is bigger, company authorship or funders with a stake in the answer. Source B's design would be weak with any author; the authorship tells you where to look, not what you will find.
 
